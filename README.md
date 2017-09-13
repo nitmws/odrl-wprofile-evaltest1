@@ -16,7 +16,7 @@ This project implements all required evaluation steps of components:
 
 All these evaluations are defined in detail by the ODRL Information Model document.
 
-As the evaluation of some components require a context (= what action on an asset should be taken by whom ...) and as such a context is not available in this test environment this project supports presets evalution result states by a configuration file.
+As the evaluation of some components require a context (= what action on an asset should be taken by whom ...) and as such a context is not available in this test environment this project supports presetting evaluation states by a configuration file.
 
 The evaluation of an ODRL Rule is documented step by step.
 
