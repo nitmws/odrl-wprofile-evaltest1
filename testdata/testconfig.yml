@@ -1,0 +1,58 @@
+CASE_TEMPLATE:
+  filename: "...no path, not extension..."
+  description: "Short description of the case"
+  evalRuleid: "http://example.com/permission:01"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      duty: "Fulfilled"
+      action: "Exercised"
+      consequence: "Not-Fulfilled"
+      remedy: "Fulfilled"
+    instances:
+      "_:b0_b0": "Not-Satisfied"
+      "_:b0_b1": "Satisfied"
+case01:
+  filename: "nitt_constraints1"
+  description: "Test of Constraints"
+  evalRuleid: "http://example.com/permission:01"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      duty: "Fulfilled"
+      action: "Exercised"
+    instances:
+      "_:b0_b0": "Satisfied"
+      "_:b0_b1": "Satisfied"
+case02:
+  filename: "nitt_duties1"
+  description: "Test of Duties"
+  evalRuleid: "http://example.com/permission:01"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      duty: "Fulfilled"
+      action: "Exercised"
+      consequence: "Not-Fulfilled"
+    instances:
+      "_:b0_b0": "Satisfied"
+      "http://www.w3.org/ns/odrl/2/attribute": "Not-Exercised"
+case03:
+  filename: "nitt_actionrefinement1"
+  description: "Test of refinement of an action"
+  evalRuleid: "http://example.com/permission:01"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      duty: "Fulfilled"
+      action: "Exercised"
+    instances:
+      "_:b0_b1": "Not-Exercised"
+case_imex23:
+  filename: "im1_example23"
+  evalRuleid: "_:b0"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      duty: "Fulfilled"

@@ -1,0 +1,11 @@
+{
+  "name": "odrl-wprofile-evaltest1-a",
+  "version": "0.0.1",
+  "author": "Michael W Steidl/NewsIT",
+  "dependencies": {
+    "js-yaml": "^3.9.1",
+    "jsonfile": "^3.0.1",
+    "jsonld": "^0.4.12",
+    "n3": "^0.11.2"
+  }
+}

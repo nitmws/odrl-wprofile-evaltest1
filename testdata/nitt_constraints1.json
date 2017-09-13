@@ -1,0 +1,21 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Offer",
+  "uid": "http://example.com/policy:6163",
+  "profile": "http://example.com/odrl:profile:10",
+  "permission": [{
+    "uid": "http://example.com/permission:01",
+    "target": "http://example.com/document:1234",
+    "assigner": "http://example.com/org:616",
+    "action": "distribute",
+    "constraint": [{
+      "leftOperand": "dateTime",
+      "operator": "lt",
+      "rightOperand": "2018-01-01"
+    }, {
+      "leftOperand": "spatial",
+      "operator": "neq",
+      "rightOperand": "http://cvx.iptc.org/iso3166-1a2/ch"
+    }]
+  }]
+}
