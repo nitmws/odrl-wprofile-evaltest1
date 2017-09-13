@@ -1,6 +1,6 @@
 # ODRL with Profile - Evaluator Test 1
 
-[ODRL](https://www.w3.org/2016/poe/charter) - Open Digital Rights Language - defines an Information Model and this model defines how to retrieve the key information from a Rule:
+[ODRL](https://www.w3.org/2016/poe/charter) - Open Digital Rights Language - has an Information Model and this model defines how to retrieve the key information from a Rule:
 * Is it allowed to exercise a Permission
 * Does the user infringe a Prohibition
 * Does a user fulfill an Obligation
