@@ -49,6 +49,19 @@ case03:
       action: "Exercised"
     instances:
       "_:b0_b1": "Not-Exercised"
+case_imex15:
+  filename: "im1_example15"
+  description: "Refinement with XONE"
+  evalRuleid: "_:b0_b0"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      duty: "Fulfilled"
+      action: "Exercised"
+    instances:
+      "http://example.com/p:88/C1http://example.com/p:88/C1": "Satisfied"
+      "http://example.com/p:88/C1http://example.com/p:88/C2": "Satisfied"
 case_imex23:
   filename: "im1_example23"
   evalRuleid: "_:b0"

@@ -1,7 +1,19 @@
 {
   "name": "odrl-wprofile-evaltest1-a",
+  "description": "Testground of an ODRL-withProfile Evaluator",
   "version": "0.0.2",
-  "author": "Michael W Steidl/NewsIT",
+  "author": {
+    "name":  "Michael W Steidl - NewsIT",
+    "email": "mwsteidl@newsit.biz",
+    "url": "www.linkedin.com/in/michaelwsteidl"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/nitmws/odrl-wprofile-evaltest1",
+  "bugs": { "url": "https://github.com/nitmws/odrl-wprofile-evaltest1/issues" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nitmws/odrl-wprofile-evaltest1"
+  },
   "dependencies": {
     "js-yaml": "^3.9.1",
     "jsonfile": "^3.0.1",
