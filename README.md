@@ -33,5 +33,5 @@ The current state of this project is "under construction":
 
 Timeline: all evaluations should be available in mid-October 2017.
 
-This project is published under the [MIT](https://opensource.org/licenses/MIT) license and copyrighted by [Michael Steidl/NewsIT](www.linkedin.com/in/michaelwsteidl)
+This project is published under the [MIT](https://opensource.org/licenses/MIT) license and copyrighted by [Michael Steidl/NewsIT](https://www.linkedin.com/in/michaelwsteidl)
 
