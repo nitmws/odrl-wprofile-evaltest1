@@ -87,10 +87,10 @@ function doTheTest(caseName){
                         }
                         break;
                     case "prohibition":
-                        if (prohibitionQuadsQuads.length > 0){
-                            if (prohibitionQuadsQuads.length <= evalRulepropertyindexnr){
-                                evalRuleid = prohibitionQuadsQuads[evalRulepropertyindexnr - 1].object
-                                evalRulePropertyname = prohibitionQuadsQuads[evalRulepropertyindexnr - 1].predicate
+                        if (prohibitionQuads.length > 0){
+                            if (prohibitionQuads.length <= evalRulepropertyindexnr){
+                                evalRuleid = prohibitionQuads[evalRulepropertyindexnr - 1].object
+                                evalRulePropertyname = prohibitionQuads[evalRulepropertyindexnr - 1].predicate
                                 evalRuleFound = true
                             }
                         }
@@ -140,6 +140,7 @@ function doTheTest(caseName){
                     // _doPermissionTest(policyN3store, evalRuleid, tlog, caseName)
                     break
                 case odrlVocab.prohibition:
+                    evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, caseName)
                     break;
                 case odrlVocab.obligation:
                     break;
@@ -153,67 +154,3 @@ function doTheTest(caseName){
 }
 exports.doTheTest = doTheTest
 
-/*
-function _doPermissionTest(policyTriplestore, evalRuleid, testlogger, testcaseName ){
-    // retrieve the actionId from the class of the subjectId
-    let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
-    let actionId = ""
-    if (actionQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation ERROR: Permission has no action")
-        return
-    }
-    else {
-        actionId = actionQuads[0].object
-    }
-
-    // Evaluate the refinement Constraints of the action
-    let refinementsEvalResult =
-        evaluator.evaluateAllRefinements(policyTriplestore, actionId, testlogger, testcaseName)
-    switch(refinementsEvalResult){
-        case evaluator.evalConstraintState[0]:
-            // refinements are Satisified --> continue processing
-            break;
-        case evaluator.evalConstraintState[1]:
-            // refinements are Not-Satisified --> return a Not-Existing
-            testlogger.addLine("TESTRESULT: Evalution of ActionExercised '" + actionId + "' - refinments, status = "
-                + evalDutyState[2] + " (action not existing by Not-Satisfied refinement)")
-            return
-            break;
-        case evaluator.evalConstraintState[2]:
-            // refinements are Not-Existing --> continue processing
-            break;
-        case evaluator.evalConstraintState[3]:
-            // refinements returned an ERROR --> do the same
-            return
-            break;
-    }
-
-    let dutyEvalResult = evaluator.evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
-    testlogger.addLine("TESTRESULT: Evalution of all duty(ies), status = " + dutyEvalResult)
-    let permissionStateIdx = 0
-    switch(dutyEvalResult){
-        case evaluator.evalDutyState[0]:
-            permissionStateIdx = 0;
-            break;
-        case evaluator.evalDutyState[1]:
-            permissionStateIdx = 1;
-            break;
-        case evaluator.evalDutyState[2]:
-            permissionStateIdx = 0;
-            break;
-        case evaluator.evalDutyState[3]:
-            permissionStateIdx = 3;
-            break;
-    }
-    testlogger.addLine("TESTRESULT: Evalution of the full Permission instance, status = " +
-        evaluator.evalPermissionState[permissionStateIdx])
-}
-*/
-
-function _doProhibitionTest(policyN3store, evalRuleid, testcaseName, testlogger){
-
-}
-
-function _doObligationTest(){
-
-}

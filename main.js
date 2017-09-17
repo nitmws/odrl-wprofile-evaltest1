@@ -15,6 +15,8 @@ Test1.doTheTest("case02") // Duties
 
 // Test1.doTheTest("case03") // Refinement
 
-Test1.doTheTest("case_imex15") // Refinement
+// Test1.doTheTest("case_imex15") // Refinement
+
+Test1.doTheTest("case_imex24") // Refinement
 
 console.log("MSG: ODRL-RightsML Evaluator Tests finished.")

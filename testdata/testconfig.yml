@@ -65,8 +65,18 @@ case_imex15:
       "http://example.com/p:88/C2": "Not-Satisfied"
 case_imex23:
   filename: "im1_example23"
-  evalRuleid: "_:b0"
+  evalRuleproperty: "permission:1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
       duty: "Fulfilled"
+case_imex24:
+  filename: "im1_example24"
+  evalRuleproperty: "prohibition:1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      action: "Exercised"
+      duty: "Fulfilled"
+    instances:
+      dummy: "dummy"

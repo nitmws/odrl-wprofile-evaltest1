@@ -10,7 +10,7 @@ let configs = require("../services/configs")
  */
 const evalConstraintState  = ["Satisfied", "Not-Satisfied", "Not-Existing", "ERROR"]
 exports.evalConstraintState = evalConstraintState
-const evalDutyState = ["FulFilled", "Not-Fulfilled", "Not-Existing", "ERROR"]
+const evalDutyState = ["Fulfilled", "Not-Fulfilled", "Not-Existing", "ERROR"]
 exports.evalDutyState = evalDutyState
 const evalPermissionState = ["Allowed", "Not-Allowed", "Not-Existing", "ERROR"]
 exports.evalPermissionState = evalPermissionState
@@ -57,7 +57,7 @@ function evaluateAllRefinements(policyTriplestore, subjectId, testlogger, testca
 
     let evaluationResult = evaluateConstraintClassInstances(policyTriplestore, subjectId,
         odrlVocab.refinement, testlogger, testcaseName)
-    testlogger.addLine("TESTRESULT: Evalution of all refinements of '" + subjectId + "', status = " + evaluationResult)
+    testlogger.addLine("TESTRESULT: Evaluation of all refinements of '" + subjectId + "', status = " + evaluationResult)
 
     return evaluationResult
 }
@@ -182,7 +182,7 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
                 if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
                 }
-                testlogger.addLine("TESTRESULT: Evalution of Constraint instance '" + constraintId + "' (a "
+                testlogger.addLine("TESTRESULT: Evaluation of Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
                 return testResultPreset
             }
@@ -196,7 +196,7 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
                 if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.refinement) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.refinement
                 }
-                testlogger.addLine("TESTRESULT: Evalution of Constraint instance '" + constraintId + "' (a "
+                testlogger.addLine("TESTRESULT: Evaluation of Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
                 return testResultPreset
             }
@@ -213,7 +213,7 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
                 if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
                 }
-                testlogger.addLine("TESTRESULT: Evalution of Logical Constraint instance '" + constraintId + "' (a "
+                testlogger.addLine("TESTRESULT: Evaluation of Logical Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
                 return testResultPreset
             }
@@ -410,7 +410,7 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
     if (!policyTriplestore) {
         return evalDutyState[3]
     }
-    let dutyQuads = policyTriplestore.getTriplesByIRI(ruleId, "http://www.w3.org/ns/odrl/2/duty", null, null)
+    let dutyQuads = policyTriplestore.getTriplesByIRI(ruleId, odrlVocab.duty, null, null)
     if (dutyQuads.length === 0){
         return evalDutyState[2]
     }
@@ -437,9 +437,52 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
         }
     }
     // at this point of processing all Duties have returned Fulfilled
-    return evalConstraintState[0]
+    return evalDutyState[0]
 }
 exports.evaluateAll_dutyDuties = evaluateAll_dutyDuties
+
+/**
+ * Evaluates all Duty instances referenced by a 'remedy' property. Returns a Duty status.
+ * @param policyTriplestore
+ * @param ruleId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
+function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcaseName) {
+    if (!policyTriplestore) {
+        return evalDutyState[3]
+    }
+    let remedyQuads = policyTriplestore.getTriplesByIRI(ruleId, odrlVocab.remedy, null, null)
+    if (remedyQuads.length === 0){
+        return evalDutyState[2]
+    }
+    for (let i=0; i < remedyQuads.length; i++) {
+        let remedyId = remedyQuads[i].object
+        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, testlogger, testcaseName)
+        switch (remedyEvalResult) {
+            case evalDutyState[0]:
+                // remedy is Fulfilled --> continue processing
+                break;
+            case evalDutyState[1]:
+                // remedy is Not-Fulfilled --> break processing an return Not-Fulfilled
+                return evalDutyState[1]
+                break;
+            case evalDutyState[2]:
+                // remedy is Not-Existing --> continue processing
+                break;
+            case evalDutyState[3]:
+                // remedy returns an ERROR --> do the same
+                return evalDutyState[3]
+                break;
+            default:
+                return evalDutyState[1]
+        }
+    }
+    // at this point of processing all Duties have returned Fulfilled
+    return evalDutyState[0]
+}
+exports.evaluateAll_remedyDuties = evaluateAll_remedyDuties
 
 /**
  * Evaluates an instance of Duty Class referenced by a duty or obligation property.
@@ -525,7 +568,7 @@ function evaluate_consequenceDutyInstance(policyTriplestore, dutyId, testlogger,
         if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.consequence) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.consequence
         }
-        testlogger.addLine("TESTRESULT: Evalution of consequence Duty instance '" + dutyId + "', status = "
+        testlogger.addLine("TESTRESULT: Evaluation of consequence Duty instance '" + dutyId + "', status = "
             + testResultPreset + " (preset)")
         return testResultPreset
     }
@@ -572,7 +615,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
             break;
         case evalConstraintState[1]:
             // constraints are Not-Satisified --> return a Not-Existing
-            testlogger.addLine("TESTRESULT: Evalution of Duty instance '" + dutyId + "', status = " + evalDutyState[2] + " (constraints Not-Satisfied)")
+            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[2] + " (constraints Not-Satisfied)")
             return evalDutyState[2]
             break;
         case evalConstraintState[2]:
@@ -580,7 +623,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
             break;
         case evalConstraintState[3]:
             // constraints returned an ERROR --> do the same
-            testlogger.addLine("TESTRESULT: Evalution of Duty instance '" + dutyId + "', status = " + evalDutyState[3])
+            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[3])
             return evalDutyState[3]
             break;
     }
@@ -595,7 +638,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
             break;
         case evalActionExersState[2]:
             // Action is Not-Existing --> return Not-Fulfilled
-            testlogger.addLine("TESTRESULT: Evalution of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not existing)")
+            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not existing)")
             return evalDutyState[1]
             break;
         case evalActionExersState[3]:
@@ -643,7 +686,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
         if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.duty) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.duty
         }
-        testlogger.addLine("TESTRESULT: Evalution of Duty instance '" + dutyId + "', status = "
+        testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = "
             + testResultPreset + " (preset)")
         return testResultPreset
     }
@@ -680,7 +723,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
         return evalActionExersState[3]
     }
     // retrieve the actionId from the class of the subjectId
-    let actionQuads = policyTriplestore.getTriplesByIRI(subjectId, "http://www.w3.org/ns/odrl/2/action", null, null)
+    let actionQuads = policyTriplestore.getTriplesByIRI(subjectId, odrlVocab.action, null, null)
     let actionId = ""
     if (actionQuads.length < 1){
         return evalActionExersState[3] // = not existing
@@ -688,6 +731,8 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
     else {
         actionId = actionQuads[0].object
     }
+
+    testlogger.addLine("NEXT STEP: Evaluation of ActionExercised of action '" + actionId + "'")
 
     // Evaluate the refinement Constraints
     let refinementsEvalResult =
@@ -698,7 +743,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
             break;
         case evalConstraintState[1]:
             // refinements are Not-Satisified --> return a Not-Existing
-            testlogger.addLine("TESTRESULT: Evalution of ActionExercised '" + actionId + "' - refinments, status = "
+            testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "' - refinments, status = "
                 + evalDutyState[2] + " (action not existing by Not-Satisfied refinement)")
             return evalDutyState[2]
             break;
@@ -719,7 +764,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
         if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.action) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.action
         }
-        testlogger.addLine("TESTRESULT: Evalution of ActionExercised '" + actionId + "', status = "
+        testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "', status = "
             + testResultPreset + " (preset)")
         return testResultPreset
     }
@@ -733,7 +778,7 @@ exports.evaluateActionExercised = evaluateActionExercised
 */
 
 /**
- * Evaluatse an instance of the Rule Class referenced by the property permission
+ * Evaluates an instance of the Rule Class referenced by the property permission
  * @param policyTriplestore
  * @param evalRuleid
  * @param testlogger
@@ -760,7 +805,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
             break;
         case evalConstraintState[1]:
             // refinements are Not-Satisified --> return a Not-Existing
-            testlogger.addLine("TESTRESULT-FINAL: Evalution of ActionExercised '" + actionId + "' - refinments, status = "
+            testlogger.addLine("TESTRESULT-FINAL: Evaluation of ActionExercised '" + actionId + "' - refinments, status = "
                 + evalDutyState[2] + " (action not existing by Not-Satisfied refinement)")
             return
             break;
@@ -774,7 +819,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
     }
 
     let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
-    testlogger.addLine("TESTRESULT-FINAL: Evalution of all duty(ies), status = " + dutyEvalResult)
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation of all duty(ies), status = " + dutyEvalResult)
     let permissionStateIdx = 0
     switch(dutyEvalResult){
         case evalDutyState[0]:
@@ -790,7 +835,78 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
             permissionStateIdx = 3;
             break;
     }
-    testlogger.addLine("TESTRESULT-FINAL: Evalution of the full Permission instance, status = " +
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Permission instance, status = " +
         evalPermissionState[permissionStateIdx])
 }
 exports.evaluatePermission = evaluatePermission
+
+/**
+ * Evaluates an instance of the Rule Class referenced by the property prohibition
+ * @param policyTriplestore
+ * @param evalRuleid
+ * @param testlogger
+ * @param testcaseName
+ */
+function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, testcaseName ){
+    // retrieve the actionId from the class of the subjectId
+    let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
+    let actionId = ""
+    if (actionQuads.length < 1){
+        testlogger.addLine("TESTRESULT-FINAL: validation ERROR: Prohibtion has no action")
+        return
+    }
+    else {
+        actionId = actionQuads[0].object
+    }
+
+    // testlogger.addLine("NEXT STEP: Evaluation of ActionExercised")
+
+    let actionExercisedEvalResult =
+        evaluateActionExercised(policyTriplestore, evalRuleid, testlogger, testcaseName)
+    switch(actionExercisedEvalResult){
+        case evalActionExersState[0]:
+            // action was exercised - continue processing
+            break;
+        case evalActionExersState[1]:
+            // action was not exercised - Prohibition is not violated
+            testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "', status = "
+                + actionExercisedEvalResult)
+            testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Prohibition instance, status = " +
+                evalProhibitionState[0])
+            return
+            break;
+        case evalActionExersState[2]:
+            // action is Not-Existing --> continue processing
+            testlogger.addLine("TESTRESULT-FINAL: validation ERROR: Prohibition has no action")
+            return
+            break;
+        case evalActionExersState[3]:
+            // refinements returned an ERROR --> do the same
+            testlogger.addLine("TESTRESULT-FINAL: Evaluation of ActionExercised '" + actionId + "' returned an ERROR - evaluation aborted")
+            return
+            break;
+    }
+
+    // action has been exercised: evaluate the satisfaction of the remedies
+    testlogger.addLine("NEXT STEP: Action of Prohibition exercised: evaluation of remedies")
+    let remedyEvalResult = evaluateAll_remedyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
+    testlogger.addLine("TESTRESULT: Evaluation of all remedy(ies), status = " + remedyEvalResult)
+    let prohibitionStateIdx = 0
+    switch(remedyEvalResult){
+        case evalDutyState[0]:
+            prohibitionStateIdx = 0;
+            break;
+        case evalDutyState[1]:
+            prohibitionStateIdx = 1;
+            break;
+        case evalDutyState[2]:
+            prohibitionStateIdx = 0;
+            break;
+        case evalDutyState[3]:
+            prohibitionStateIdx = 3;
+            break;
+    }
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Prohibition instance, status = " +
+        evalProhibitionState[prohibitionStateIdx])
+}
+exports.evaluateProhibition = evaluateProhibition
