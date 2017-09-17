@@ -27,8 +27,11 @@ The testwise evaluation of Rules can be controlled by a configuration file which
 * presets of test results, see above
 
 The current state of this project is "under construction":
-* the evaluation of a Permission is almost complete
-* the evaluation of a Prohibition does not exist yet
+* the evaluation of a Permission is complete, needs more testing
+* the evaluation of a Prohibition is almost complete
 * the evaluation of an Obligation does not exist yet
 
 Timeline: all evaluations should be available in mid-October 2017.
+
+This project is published under the [MIT](https://opensource.org/licenses/MIT) license and copyrighted by [Michael Steidl/NewsIT](www.linkedin.com/in/michaelwsteidl)
+
