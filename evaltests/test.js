@@ -58,18 +58,64 @@ function doTheTest(caseName){
         policyN3store.addTriples(policyN3triples)
         tlog.addLine("MSG: JSON-LD read, parsed, transformed to RDF, files written ")
 
+        let permissionQuads = policyN3store.getTriplesByIRI(null, odrlVocab.permission, null, null)
+        let prohibitionQuads = policyN3store.getTriplesByIRI(null, odrlVocab.prohibition, null, null)
+        let obligationQuads = policyN3store.getTriplesByIRI(null, odrlVocab.obligation, null, null)
+
+
         // START evaluating a specific Rule
         let evalRuleid = ""
+        let evalRuleFound = false
+        let evalRulePropertyname = ""
         if (configs.testconfig[caseName].evalRuleid){
             evalRuleid = configs.testconfig[caseName].evalRuleid
         }
         else {
+            if (configs.testconfig[caseName].evalRuleproperty){
+                let evalRuleproperty = configs.testconfig[caseName].evalRuleproperty
+                let strArr = evalRuleproperty.split(":")
+                let evalRulepropertyname = strArr[0]
+                let evalRulepropertyindexnr = parseInt(strArr[1], 10)
+                switch (evalRulepropertyname){
+                    case "permission":
+                        if (permissionQuads.length > 0){
+                            if (permissionQuads.length <= evalRulepropertyindexnr){
+                                evalRuleid = permissionQuads[evalRulepropertyindexnr - 1].object
+                                evalRulePropertyname = permissionQuads[evalRulepropertyindexnr - 1].predicate
+                                evalRuleFound = true
+                            }
+                        }
+                        break;
+                    case "prohibition":
+                        if (prohibitionQuadsQuads.length > 0){
+                            if (prohibitionQuadsQuads.length <= evalRulepropertyindexnr){
+                                evalRuleid = prohibitionQuadsQuads[evalRulepropertyindexnr - 1].object
+                                evalRulePropertyname = prohibitionQuadsQuads[evalRulepropertyindexnr - 1].predicate
+                                evalRuleFound = true
+                            }
+                        }
+                        break;
+                    case "obligation":
+                        if (obligationQuads.length > 0){
+                            if (obligationQuads.length <= evalRulepropertyindexnr){
+                                evalRuleid = obligationQuads[evalRulepropertyindexnr - 1].object
+                                evalRulePropertyname = obligationQuads[evalRulepropertyindexnr - 1].predicate
+                                evalRuleFound = true
+                            }
+                        }
+                        break
+                }
+            }
+        }
+
+        if (!evalRuleFound){
             logLine = "ERROR: no id of the Rule which should be evaluated defined - TEST terminated"
             tlog.addLine(logLine)
             tlog.writeLog("CASE_" + caseName + "_log.txt")
             console.log(logLine)
             return
         }
+        // at this point the id of the rule which should be evaluated is set
 
         // Evaluate the Constraints
         let constraintsEvalResult =
@@ -80,19 +126,18 @@ function doTheTest(caseName){
             tlog.addLine("TESTRESULT: Constraint(s) of the Rule is/are Not-Satisfied - no further processing")
         }
         else {
-            // get the subclass of the Rule
-            // let testQuads = policyN3store.getTriplesByIRI(null, odrlVocab.permission, null, null)
-
-            let rulePropertyname = ""
-            let ruleQuads = policyN3store.getTriplesByIRI(null, null, evalRuleid, null)
-            if (ruleQuads) {
-                rulePropertyname = ruleQuads[0].predicate
+            if (evalRulePropertyname == "") {
+                // get the subclass of the Rule
+                let ruleQuads = policyN3store.getTriplesByIRI(null, null, evalRuleid, null)
+                if (ruleQuads) {
+                    evalRulePropertyname = ruleQuads[0].predicate
+                }
+                tlog.addLine("TESTRESULT: inferred property referring the to-be-tested Rule = " + evalRulePropertyname)
             }
-            tlog.addLine("TESTRESULT: inferred sub-class = " + rulePropertyname)
-
-            switch (rulePropertyname) {
+            switch (evalRulePropertyname) {
                 case odrlVocab.permission:
-                    _doPermissionTest(policyN3store, evalRuleid, tlog, caseName)
+                    evaluator.evaluatePermission(policyN3store, evalRuleid, tlog, caseName)
+                    // _doPermissionTest(policyN3store, evalRuleid, tlog, caseName)
                     break
                 case odrlVocab.prohibition:
                     break;
@@ -108,9 +153,10 @@ function doTheTest(caseName){
 }
 exports.doTheTest = doTheTest
 
+/*
 function _doPermissionTest(policyTriplestore, evalRuleid, testlogger, testcaseName ){
     // retrieve the actionId from the class of the subjectId
-    let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, "http://www.w3.org/ns/odrl/2/action", null, null)
+    let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
     let actionId = ""
     if (actionQuads.length < 1){
         testlogger.addLine("TESTRESULT: validation ERROR: Permission has no action")
@@ -162,6 +208,7 @@ function _doPermissionTest(policyTriplestore, evalRuleid, testlogger, testcaseNa
     testlogger.addLine("TESTRESULT: Evalution of the full Permission instance, status = " +
         evaluator.evalPermissionState[permissionStateIdx])
 }
+*/
 
 function _doProhibitionTest(policyN3store, evalRuleid, testcaseName, testlogger){
 

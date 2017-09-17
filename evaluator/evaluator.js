@@ -1,8 +1,6 @@
 "use strict"
 
-let N3 = require("n3")
 let odrlVocab = require("../model/vocabulary")
-let policy = require("../model/Policy")
 let configs = require("../services/configs")
 
 /**
@@ -26,6 +24,14 @@ exports.evalActionExersState = evalActionExersState
     ***** below: evaluate Constraint(s) and Refinement(s) section
 */
 
+/**
+ * Evaluates all constraints of a Rule (sub-class)
+ * @param policyTriplestore
+ * @param ruleId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {string|string} - a value of the enumeration evalConstraintState
+ */
 function evaluateAllConstraints(policyTriplestore, ruleId, testlogger, testcaseName) {
     if (!policyTriplestore) {
         return evalConstraintState[3]
@@ -36,16 +42,36 @@ function evaluateAllConstraints(policyTriplestore, ruleId, testlogger, testcaseN
 }
 exports.evaluateAllConstraints = evaluateAllConstraints
 
+/**
+ * Evaluates all refinements of an Action or Asset Collection or Party Collection
+ * @param policyTriplestore
+ * @param subjectId - id of the Action/AssetCollection/PartyCollection
+ * @param testlogger
+ * @param testcaseName
+ * @returns {string|string} - a value of the enumeration evalConstraintState
+ */
 function evaluateAllRefinements(policyTriplestore, subjectId, testlogger, testcaseName) {
     if (!policyTriplestore) {
         return evalConstraintState[3]
     }
 
-    return evaluateConstraintClassInstances(policyTriplestore, subjectId,
+    let evaluationResult = evaluateConstraintClassInstances(policyTriplestore, subjectId,
         odrlVocab.refinement, testlogger, testcaseName)
+    testlogger.addLine("TESTRESULT: Evalution of all refinements of '" + subjectId + "', status = " + evaluationResult)
+
+    return evaluationResult
 }
 exports.evaluateAllRefinements = evaluateAllRefinements
 
+/**
+ * Evaluates a set of instances of (Logical) Constraint Class (as value of a constraint or refinement property)
+ * @param policyTriplestore
+ * @param subjectId - id of the Constraint Class instance
+ * @param propertyId - id of the property constraint or refinement
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*} - a value of the enumeration evalConstraintState
+ */
 function evaluateConstraintClassInstances(policyTriplestore, subjectId, propertyId, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalConstraintState[3]
@@ -53,13 +79,13 @@ function evaluateConstraintClassInstances(policyTriplestore, subjectId, property
 
     let constraintQuads = policyTriplestore.getTriplesByIRI(subjectId, propertyId, null, null)
     let stateIdx = 0
-    if (constraintQuads.length == 0){
+    if (constraintQuads.length === 0){
         stateIdx = 2
     }
     else {
         for (let i = 0; i < constraintQuads.length; i++) {
             let constraintId = constraintQuads[i].object
-            let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            let constrEvalResult = preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
             switch (constrEvalResult) {
                 case evalConstraintState[0]:
                     break;
@@ -84,6 +110,63 @@ function evaluateConstraintClassInstances(policyTriplestore, subjectId, property
 }
 // exports.evaluateConstraintClassInstances = evaluateConstraintClassInstances
 
+/**
+ * Pre-evaluation of a single instance of a Constraint Class.
+ * Makes a distinction between atomic Constraint and Logical Constraint
+ * Forwards to a specific full evaluation.
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ */
+function preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+    // check the existence of a Logical Constraint operand:
+    let lcoperand = ""
+    let lcopTestQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_or, null, null)
+    if (lcopTestQuads.length > 0) { lcoperand = odrlVocab.lc_or}
+    if (lcoperand === ""){
+        let lcopTestQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_and, null, null)
+        if (lcopTestQuads.length > 0) { lcoperand = odrlVocab.lc_and}
+    }
+    if (lcoperand === ""){
+        let lcopTestQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_xone, null, null)
+        if (lcopTestQuads.length > 0) { lcoperand = odrlVocab.lc_xone}
+    }
+    if (lcoperand === ""){
+        let lcopTestQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_andSequence, null, null)
+        if (lcopTestQuads.length > 0) { lcoperand = odrlVocab.lc_andSequence}
+    }
+
+    switch(lcoperand){
+        case "": // no Logical Constraint operand: is a plain/atomic Constraint
+            return evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            break
+        case odrlVocab.lc_or:
+            return evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            break
+        case odrlVocab.lc_and:
+            return evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            break
+        case odrlVocab.lc_xone:
+            return evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            break
+        case odrlVocab.lc_andSequence:
+            return evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            break
+    }
+}
+exports.preevaluateConstraintClassInstance = preevaluateConstraintClassInstance
+
+/**
+ * Evaluates a single instance of a (Logical) Constraint Class
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*} - a value of the enumeration evalConstraintState
+ */
 function evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalConstraintState[3]
@@ -95,12 +178,13 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
                 let testResultPreset = ""
                 if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
-                    return testResultPreset
                 }
-                if (configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
+                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
-                    return testResultPreset
                 }
+                testlogger.addLine("TESTRESULT: Evalution of Constraint instance '" + constraintId + "' (a "
+                    + propertyId +  "), status = " + testResultPreset + " (preset)")
+                return testResultPreset
             }
             break
         case odrlVocab.refinement:
@@ -109,10 +193,27 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
                 if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
                 }
-                if (configs.testconfig[testcaseName].evalpresets.defaults.refinement) {
+                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.refinement) {
                     testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.refinement
                 }
                 testlogger.addLine("TESTRESULT: Evalution of Constraint instance '" + constraintId + "' (a "
+                    + propertyId +  "), status = " + testResultPreset + " (preset)")
+                return testResultPreset
+            }
+            break
+        case odrlVocab.lc_or:
+        case odrlVocab.lc_and:
+        case odrlVocab.lc_andSequence:
+        case odrlVocab.lc_xone:
+            if (testcaseName) {
+                let testResultPreset = ""
+                if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
+                    testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
+                }
+                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
+                    testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
+                }
+                testlogger.addLine("TESTRESULT: Evalution of Logical Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
                 return testResultPreset
             }
@@ -123,15 +224,174 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
     NOTE: a full implementation of an Evaluator should start processing the Constraint now.
         As this is considered as black-box by the ODRL Recommendation this processing and
         its result is replaced by the presets above.
-
-    let constraintQuads = policyTriplestore.getTriplesByIRI(constraintId, null, null, null)
-    ...
-
 */
     return evalConstraintState[3] // actually the function shouldn't get there because of the presets above
 }
 exports.evaluateConstraintClassInstance = evaluateConstraintClassInstance
 
+/**
+ * Evaluates an instance of a Logical Constraint class with the "or" operand
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
+function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+    if (!policyTriplestore){
+        return evalConstraintState[3]
+    }
+
+    let lcoperandValueQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_or, null, null)
+    let satisfiedCount = 0
+    if (lcoperandValueQuads.length === 0){
+        return evalConstraintState[1] // not satisfied
+    }
+    for (let i = 0; i < lcoperandValueQuads.length; i++) {
+        let constraintId = lcoperandValueQuads[i].object
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_or, testlogger, testcaseName)
+        switch (constrEvalResult) {
+            case evalConstraintState[0]:
+                satisfiedCount++
+                break;
+            case evalConstraintState[1]:
+                break;
+            case evalConstraintState[2]:
+                break;
+            case evalConstraintState[3]:
+                break;
+            default:
+        }
+    }
+    if (satisfiedCount > 1) {
+        return evalConstraintState[0]
+    }
+    return evalConstraintState[1]
+}
+
+/**
+ * Evaluates an instance of a Logical Constraint class with an "xone" operand
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
+function evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+    if (!policyTriplestore){
+        return evalConstraintState[3]
+    }
+
+    let lcoperandValueQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_xone, null, null)
+    let satisfiedCount = 0
+    if (lcoperandValueQuads.length === 0){
+        return evalConstraintState[1] // not satisfied
+    }
+    for (let i = 0; i < lcoperandValueQuads.length; i++) {
+        let constraintId = lcoperandValueQuads[i].object
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_xone, testlogger, testcaseName)
+        switch (constrEvalResult) {
+            case evalConstraintState[0]:
+                satisfiedCount++
+                break;
+            case evalConstraintState[1]:
+                break;
+            case evalConstraintState[2]:
+                break;
+            case evalConstraintState[3]:
+                break;
+            default:
+        }
+    }
+    if (satisfiedCount === 1) {
+        return evalConstraintState[0]
+    }
+    return evalConstraintState[1]
+}
+
+/**
+ * Evaluates an instance of a Logical Constraint class with an "and" operand
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
+function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+    if (!policyTriplestore){
+        return evalConstraintState[3]
+    }
+
+    let lcoperandValueQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_and, null, null)
+    let satisfiedCount = 0
+    if (lcoperandValueQuads.length === 0){
+        return evalConstraintState[1] // not satisfied
+    }
+    for (let i = 0; i < lcoperandValueQuads.length; i++) {
+        let constraintId = lcoperandValueQuads[i].object
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_and, testlogger, testcaseName)
+        switch (constrEvalResult) {
+            case evalConstraintState[0]:
+                satisfiedCount++
+                break;
+            case evalConstraintState[1]:
+                break;
+            case evalConstraintState[2]:
+                break;
+            case evalConstraintState[3]:
+                break;
+            default:
+        }
+    }
+    if (satisfiedCount === lcoperandValueQuads.length) {
+        return evalConstraintState[0]
+    }
+    return evalConstraintState[1]
+}
+
+/**
+ * Evaluates an instance of a Logical Constraint class with an "andSequence" operand
+ * @param policyTriplestore
+ * @param constraintId
+ * @param propertyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
+function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+    if (!policyTriplestore){
+        return evalConstraintState[3]
+    }
+
+    let lcoperandValueQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_andSequence, null, null)
+    let satisfiedCount = 0
+    if (lcoperandValueQuads.length === 0){
+        return evalConstraintState[1] // not satisfied
+    }
+    for (let i = 0; i < lcoperandValueQuads.length; i++) {
+        let constraintId = lcoperandValueQuads[i].object
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_andSequence, testlogger, testcaseName)
+        switch (constrEvalResult) {
+            case evalConstraintState[0]:
+                satisfiedCount++
+                break;
+            case evalConstraintState[1]:
+                break;
+            case evalConstraintState[2]:
+                break;
+            case evalConstraintState[3]:
+                break;
+            default:
+        }
+    }
+    if (satisfiedCount === lcoperandValueQuads.length) {
+        return evalConstraintState[0]
+    }
+    return evalConstraintState[1]
+}
 
 /*
     *************************************************************************************
@@ -151,10 +411,9 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
         return evalDutyState[3]
     }
     let dutyQuads = policyTriplestore.getTriplesByIRI(ruleId, "http://www.w3.org/ns/odrl/2/duty", null, null)
-    if (dutyQuads.length == 0){
+    if (dutyQuads.length === 0){
         return evalDutyState[2]
     }
-    let stateIdx = 0
     for (let i=0; i < dutyQuads.length; i++) {
         let dutyId = dutyQuads[i].object
         let dutyEvalResult = evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName)
@@ -182,6 +441,15 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
 }
 exports.evaluateAll_dutyDuties = evaluateAll_dutyDuties
 
+/**
+ * Evaluates an instance of Duty Class referenced by a duty or obligation property.
+ * This requires to include consequence properties.
+ * @param policyTriplestore
+ * @param dutyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
 function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName) {
     if (!policyTriplestore) {
         return evalDutyState[3]
@@ -190,11 +458,10 @@ function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, t
     // first round of Duty evaluation
     let mainDutyState = evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName)
     //  check if the returned state is "Not-Fulfilled"
-    if (mainDutyState == evalDutyState[1]){
+    if (mainDutyState === evalDutyState[1]){
         // in this case: retrieve consequences and evaluate them
         let consquenceQuads = policyTriplestore.getTriplesByIRI(dutyId, "http://www.w3.org/ns/odrl/2/consequence", null, null)
-        let stateIdx = 0
-        if (consquenceQuads.length == 0) {
+        if (consquenceQuads.length === 0) {
             return evalDutyState[1] // if entered as Not-Fulfilled and no consequence -> Not-Fulfilled
         }
         else {
@@ -237,6 +504,14 @@ function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, t
 }
 exports.evaluate_dutyOr_obligationDuty = evaluate_dutyOr_obligationDuty
 
+/**
+ * Evaluates an instance of Duty Class referenced by a consequence property.
+ * @param policyTriplestore
+ * @param dutyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
 function evaluate_consequenceDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName) {
     if (!policyTriplestore) {
         return evalDutyState[3]
@@ -247,7 +522,7 @@ function evaluate_consequenceDutyInstance(policyTriplestore, dutyId, testlogger,
         if (configs.testconfig[testcaseName].evalpresets.instances[dutyId]) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[dutyId]
         }
-        if (configs.testconfig[testcaseName].evalpresets.defaults.consequence) {
+        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.consequence) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.consequence
         }
         testlogger.addLine("TESTRESULT: Evalution of consequence Duty instance '" + dutyId + "', status = "
@@ -275,7 +550,14 @@ function evaluate_consequenceDutyInstance(policyTriplestore, dutyId, testlogger,
 }
 exports.evaluate_consequenceDutyInstance = evaluate_consequenceDutyInstance
 
-
+/**
+ * Evaluates the core of an instance of a Duty Class
+ * @param policyTriplestore
+ * @param dutyId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
 function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalDutyState[3]
@@ -325,8 +607,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
     if (actionEvalResult === evalActionExersState[1]) {
         // action was Not-Exercised: evaluate the Consequences
         let consequQuads = policyTriplestore.getTriplesByIRI(dutyId, "http://www.w3.org/ns/odrl/2/consequence", null, null)
-        let stateIdx = 0
-        if (consequQuads.length == 0) {
+        if (consequQuads.length === 0) {
             return evalDutyState[1] // action Not-Exercised, no consequences exist - return Not-Fulfilled
         }
         else {
@@ -359,7 +640,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
         if (configs.testconfig[testcaseName].evalpresets.instances[dutyId]) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[dutyId]
         }
-        if (configs.testconfig[testcaseName].evalpresets.defaults.duty) {
+        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.duty) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.duty
         }
         testlogger.addLine("TESTRESULT: Evalution of Duty instance '" + dutyId + "', status = "
@@ -385,9 +666,18 @@ exports.evaluateDutyInstance = evaluateDutyInstance
     ***** below: evaluate Action section
 */
 
+/**
+ * Evaluates the instance of an Action Class.
+ * Checks if existing refinements are satisfied and in this case if the action has been exercised
+ * @param policyTriplestore
+ * @param subjectId
+ * @param testlogger
+ * @param testcaseName
+ * @returns {*}
+ */
 function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testcaseName){
     if (!policyTriplestore){
-        return evalDutyState[3]
+        return evalActionExersState[3]
     }
     // retrieve the actionId from the class of the subjectId
     let actionQuads = policyTriplestore.getTriplesByIRI(subjectId, "http://www.w3.org/ns/odrl/2/action", null, null)
@@ -426,7 +716,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
         if (configs.testconfig[testcaseName].evalpresets.instances[actionId]) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[actionId]
         }
-        if (configs.testconfig[testcaseName].evalpresets.defaults.action) {
+        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.action) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.action
         }
         testlogger.addLine("TESTRESULT: Evalution of ActionExercised '" + actionId + "', status = "
@@ -436,3 +726,71 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
 
 }
 exports.evaluateActionExercised = evaluateActionExercised
+
+/*
+    *************************************************************************************
+    ***** below: evaluate a Rule referenced by the property permission
+*/
+
+/**
+ * Evaluatse an instance of the Rule Class referenced by the property permission
+ * @param policyTriplestore
+ * @param evalRuleid
+ * @param testlogger
+ * @param testcaseName
+ */
+function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseName ){
+    // retrieve the actionId from the class of the subjectId
+    let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
+    let actionId = ""
+    if (actionQuads.length < 1){
+        testlogger.addLine("TESTRESULT-FINAL: validation ERROR: Permission has no action")
+        return
+    }
+    else {
+        actionId = actionQuads[0].object
+    }
+
+    // Evaluate the refinement Constraints of the action
+    let refinementsEvalResult =
+        evaluateAllRefinements(policyTriplestore, actionId, testlogger, testcaseName)
+    switch(refinementsEvalResult){
+        case evalConstraintState[0]:
+            // refinements are Satisified --> continue processing
+            break;
+        case evalConstraintState[1]:
+            // refinements are Not-Satisified --> return a Not-Existing
+            testlogger.addLine("TESTRESULT-FINAL: Evalution of ActionExercised '" + actionId + "' - refinments, status = "
+                + evalDutyState[2] + " (action not existing by Not-Satisfied refinement)")
+            return
+            break;
+        case evalConstraintState[2]:
+            // refinements are Not-Existing --> continue processing
+            break;
+        case evalConstraintState[3]:
+            // refinements returned an ERROR --> do the same
+            return
+            break;
+    }
+
+    let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
+    testlogger.addLine("TESTRESULT-FINAL: Evalution of all duty(ies), status = " + dutyEvalResult)
+    let permissionStateIdx = 0
+    switch(dutyEvalResult){
+        case evalDutyState[0]:
+            permissionStateIdx = 0;
+            break;
+        case evalDutyState[1]:
+            permissionStateIdx = 1;
+            break;
+        case evalDutyState[2]:
+            permissionStateIdx = 0;
+            break;
+        case evalDutyState[3]:
+            permissionStateIdx = 3;
+            break;
+    }
+    testlogger.addLine("TESTRESULT-FINAL: Evalution of the full Permission instance, status = " +
+        evalPermissionState[permissionStateIdx])
+}
+exports.evaluatePermission = evaluatePermission
