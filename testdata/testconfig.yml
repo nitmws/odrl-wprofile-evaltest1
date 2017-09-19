@@ -35,8 +35,8 @@ case02:
       action: "Exercised"
       consequence: "Not-Fulfilled"
     instances:
-      "_:b0_b0": "Satisfied"
       "http://www.w3.org/ns/odrl/2/attribute": "Not-Exercised"
+      "http://www.w3.org/ns/odrl/2/acceptTracking": "Not-Exercised"
 case03:
   filename: "nitt_actionrefinement1"
   description: "Test of refinement of an action"
@@ -49,11 +49,23 @@ case03:
       action: "Exercised"
     instances:
       "_:b0_b1": "Not-Exercised"
+case04:
+  filename: "nitt_prohibition1"
+  evalRuleproperty: "prohibition.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      action: "Exercised"
+      duty: "Fulfilled"
+    instances:
+      dummy: "dummy"
+commentline341234: "Below: cases built on CR-IM examples, numbering follows IM"
 case_imex15:
   filename: "im1_example15"
   description: "Refinement with XONE"
   evalRuleid001: "_:b0_b0"
-  evalRuleproperty: "permission:1"
+  evalRuleproperty: "permission.1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -65,14 +77,14 @@ case_imex15:
       "http://example.com/p:88/C2": "Not-Satisfied"
 case_imex23:
   filename: "im1_example23"
-  evalRuleproperty: "permission:1"
+  evalRuleproperty: "permission.1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
       duty: "Fulfilled"
 case_imex24:
   filename: "im1_example24"
-  evalRuleproperty: "prohibition:1"
+  evalRuleproperty: "prohibition.1"
   evalpresets:
     defaults:
       constraint: "Satisfied"

@@ -69,11 +69,12 @@ function doTheTest(caseName){
         let evalRulePropertyname = ""
         if (configs.testconfig[caseName].evalRuleid){
             evalRuleid = configs.testconfig[caseName].evalRuleid
+            evalRuleFound = true
         }
         else {
             if (configs.testconfig[caseName].evalRuleproperty){
                 let evalRuleproperty = configs.testconfig[caseName].evalRuleproperty
-                let strArr = evalRuleproperty.split(":")
+                let strArr = evalRuleproperty.split(".")
                 let evalRulepropertyname = strArr[0]
                 let evalRulepropertyindexnr = parseInt(strArr[1], 10)
                 switch (evalRulepropertyname){
@@ -116,6 +117,7 @@ function doTheTest(caseName){
             return
         }
         // at this point the id of the rule which should be evaluated is set
+        tlog.addLine("NEXT STEP: Start evaluation of Rule with id '" + evalRuleid + "'")
 
         // Evaluate the Constraints
         let constraintsEvalResult =

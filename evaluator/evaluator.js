@@ -459,7 +459,7 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
     }
     for (let i=0; i < remedyQuads.length; i++) {
         let remedyId = remedyQuads[i].object
-        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, testlogger, testcaseName)
+        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, false, testlogger, testcaseName)
         switch (remedyEvalResult) {
             case evalDutyState[0]:
                 // remedy is Fulfilled --> continue processing
@@ -498,110 +498,24 @@ function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, t
         return evalDutyState[3]
     }
 
-    // first round of Duty evaluation
-    let mainDutyState = evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName)
-    //  check if the returned state is "Not-Fulfilled"
-    if (mainDutyState === evalDutyState[1]){
-        // in this case: retrieve consequences and evaluate them
-        let consquenceQuads = policyTriplestore.getTriplesByIRI(dutyId, "http://www.w3.org/ns/odrl/2/consequence", null, null)
-        if (consquenceQuads.length === 0) {
-            return evalDutyState[1] // if entered as Not-Fulfilled and no consequence -> Not-Fulfilled
-        }
-        else {
-            for (let i = 0; i < consquenceQuads.length; i++) {
-                let consequenceId = consquenceQuads[i].object
-                let conseqEvalResult = evaluateDutyInstance(policyTriplestore, consequenceId, testlogger, testcaseName)
-                switch (conseqEvalResult) {
-                    case evalDutyState[0]:
-                    case evalDutyState[2]:
-                        // consequence is Fulfilled or not existing -> continue processing
-                        break;
-                    case evalDutyState[1]:
-                        // consequence is Not-Fulfilled -> break processing and return a Not-Fulfilled for the Duty
-                        return evalDutyState[1]
-                        break;
-                    case evalDutyState[3]:
-                        // consequence returns an ERROR --> break processing and return the same
-                        return evalDutyState[3]
-                        break;
-                }
-            }
-        }
-    }
-    // at this point: if consequences should be evaluated they have been Fulfilled or none exist
-    let mainStateIdx = 0
-    switch(mainDutyState){
-        case evalDutyState[0]:
-            break;
-        case evalDutyState[1]:
-            mainStateIdx = 1
-            break;
-        case evalDutyState[2]:
-            mainStateIdx = 2
-            break;
-        case evalDutyState[3]:
-            mainStateIdx = 3
-            break;
-    }
-    return evalDutyState[mainStateIdx]
+    // evaluate the Duty instance, include evaluation of consequences
+    let dutyState = evaluateDutyInstance(policyTriplestore, dutyId, true, testlogger, testcaseName)
+
+    // testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + dutyState)
+    return dutyState
 }
 exports.evaluate_dutyOr_obligationDuty = evaluate_dutyOr_obligationDuty
-
-/**
- * Evaluates an instance of Duty Class referenced by a consequence property.
- * @param policyTriplestore
- * @param dutyId
- * @param testlogger
- * @param testcaseName
- * @returns {*}
- */
-function evaluate_consequenceDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName) {
-    if (!policyTriplestore) {
-        return evalDutyState[3]
-    }
-
-    if (testcaseName) {
-        let testResultPreset = ""
-        if (configs.testconfig[testcaseName].evalpresets.instances[dutyId]) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[dutyId]
-        }
-        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.consequence) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.consequence
-        }
-        testlogger.addLine("TESTRESULT: Evaluation of consequence Duty instance '" + dutyId + "', status = "
-            + testResultPreset + " (preset)")
-        return testResultPreset
-    }
-
-    // no preset found:
-    let mainDutyState = evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName)
-    let mainStateIdx = 0
-    switch(mainDutyState){
-        case evalDutyState[0]:
-            break;
-        case evalDutyState[1]:
-            mainStateIdx = 1
-            break;
-        case evalDutyState[2]:
-            mainStateIdx = 2
-            break;
-        case evalDutyState[3]:
-            mainStateIdx = 3
-            break;
-    }
-    return evalDutyState[mainStateIdx]
-}
-exports.evaluate_consequenceDutyInstance = evaluate_consequenceDutyInstance
 
 /**
  * Evaluates the core of an instance of a Duty Class
  * @param policyTriplestore
  * @param dutyId
+ * @param evalConsequences - boolean (true for duty and obligation Duties, else false)
  * @param testlogger
  * @param testcaseName
  * @returns {*}
  */
-function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseName){
+function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalDutyState[3]
     }
@@ -614,7 +528,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
             // constraints are Satisified --> continue processing
             break;
         case evalConstraintState[1]:
-            // constraints are Not-Satisified --> return a Not-Existing
+            // constraints are Not-Satisified --> return Duty Not-Existing
             testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[2] + " (constraints Not-Satisfied)")
             return evalDutyState[2]
             break;
@@ -633,11 +547,18 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
         evaluateActionExercised(policyTriplestore, dutyId, testlogger, testcaseName)
     switch(actionEvalResult){
         case evalActionExersState[0]:
+            // Action was exercised --> continue processing
+            break
         case evalActionExersState[1]:
-            // Action was not-/exercised --> continue processing
+            if (!evalConsequences) {
+                // Action was Not-Exercised --> break and return Duty Not-Fulfilled
+                testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised)")
+                return evalDutyState[1]
+            }
+            // else: Action was Not-Exercised --> evaluate the consequences
             break;
         case evalActionExersState[2]:
-            // Action is Not-Existing --> return Not-Fulfilled
+            // Action is Not-Existing (due to refinements) --> return Duty Not-Fulfilled
             testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not existing)")
             return evalDutyState[1]
             break;
@@ -647,36 +568,56 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
             break;
     }
 
-    if (actionEvalResult === evalActionExersState[1]) {
-        // action was Not-Exercised: evaluate the Consequences
-        let consequQuads = policyTriplestore.getTriplesByIRI(dutyId, "http://www.w3.org/ns/odrl/2/consequence", null, null)
-        if (consequQuads.length === 0) {
-            return evalDutyState[1] // action Not-Exercised, no consequences exist - return Not-Fulfilled
-        }
-        else {
-            for (let i = 0; i < consequQuads.length; i++) {
-                let consequId = consequQuads[i].object
-                let consequEvalResult = evaluate_consequenceDutyInstance(policyTriplestore, consequId, testlogger, testcaseName)
-                switch (consequEvalResult) {
-                    case evalDutyState[0]:
-                        // consequence is Fulfilled --> continue processing
-                        break;
-                    case evalDutyState[1]:
-                        // consequence is Not-Fulfilled --> break processing an return Not-Fulfilled
-                        return evalDutyState[1]
-                        break;
-                    case evalDutyState[2]:
-                        // consequence is Not-Existing --> continue processing
-                        break;
-                    case evalDutyState[3]:
-                        // consequence returns an ERROR --> do the same
-                        return evalDutyState[3]
-                        break;
+    if (evalConsequences) {
+        if (actionEvalResult === evalActionExersState[1]) {
+            // action Not-Exercised: evaluate the Consequences
+            let consequQuads = policyTriplestore.getTriplesByIRI(dutyId, odrlVocab.consequence, null, null)
+            if (consequQuads.length === 0) {
+                testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised, no consequences exist)")
+                return evalDutyState[1] // action Not-Exercised, no consequences exist - return Not-Fulfilled
+            }
+            else {
+                let consequenceFulfilled = false
+                    // set to true by fulfilled conseq, not changed by not-existing conseq
+                    //    a not fulfilled consequence breaks the processing
+
+                // iterate over all existing Consequence instances
+                for (let i = 0; i < consequQuads.length; i++) {
+                    let consequId = consequQuads[i].object
+                    let consequEvalResult = evaluateDutyInstance(policyTriplestore, consequId, false, testlogger, testcaseName)
+                    switch (consequEvalResult) {
+                        case evalDutyState[0]:
+                            // consequence is Fulfilled --> set consequenceFulfilled, continue processing
+                            consequenceFulfilled = true
+                            break;
+                        case evalDutyState[1]:
+                            // consequence is Not-Fulfilled --> break processing and return Duty Not-Fulfilled
+                            testlogger.addLine("TESTRESULT: Evaluation of all consequence-Duty instances of  '"
+                                + dutyId + "' - consequence '" + consequId + "' returned Not-Fulfilled");
+                            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised, consequences Not-Fulfilled)")
+                            return evalDutyState[1]
+                            break;
+                        case evalDutyState[2]:
+                            // consequence is Not-Existing --> continue processing (keep consequenceFulfilled unchanged)
+                            break;
+                        case evalDutyState[3]:
+                            // consequence returns an ERROR --> do the same
+                            return evalDutyState[3]
+                            break;
+                    }
+                }
+                // At this point the status of all consequences can be only Fulfilled or Not-Existing
+                if (consequenceFulfilled) {
+                    testlogger.addLine("TESTRESULT: Evaluation of all consequence-Duty instances of '" + dutyId + "', status = " + evalDutyState[0])
+                }
+                else {
+                    testlogger.addLine("TESTRESULT: Evaluation of all consequence-Duty instances of '" + dutyId + "', status = " +evalDutyState[2])
+                    testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised, consequences not existing)")
+                    return evalDutyState[2]
                 }
             }
         }
     }
-
 
     if (testcaseName) {
         let testResultPreset = ""
@@ -701,6 +642,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, testlogger, testcaseNam
 
     */
     return evalDutyState[3] // actually the function shouldn't get there because of the presets above
+
 }
 exports.evaluateDutyInstance = evaluateDutyInstance
 
@@ -819,7 +761,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
     }
 
     let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
-    testlogger.addLine("TESTRESULT-FINAL: Evaluation of all duty(ies), status = " + dutyEvalResult)
+    // testlogger.addLine("TESTRESULT: Evaluation of all duty(ies), status = " + dutyEvalResult)
     let permissionStateIdx = 0
     switch(dutyEvalResult){
         case evalDutyState[0]:
