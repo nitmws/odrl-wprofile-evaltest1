@@ -10,12 +10,12 @@ let Test1 = require("./evaltests/test")
 
 // Test1.doTheTest("case01") // Constraints
 
-Test1.doTheTest("case02") // Duties
+// Test1.doTheTest("case02") // Duties
 
 
 // Test1.doTheTest("case03") // Refinement
 
-// Test1.doTheTest("case04") // Prohibition
+Test1.doTheTest("case04") // Prohibition
 
 // ********************************************************
 // ********** ODRL Information Model Examples

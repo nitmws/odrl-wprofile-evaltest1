@@ -466,6 +466,7 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
                 break;
             case evalDutyState[1]:
                 // remedy is Not-Fulfilled --> break processing an return Not-Fulfilled
+                testlogger.addLine("TESTRESULT: Evaluation of all remedies of '" + ruleId + "', status = " + evalDutyState[1] + " (constraints Not-Satisfied)")
                 return evalDutyState[1]
                 break;
             case evalDutyState[2]:

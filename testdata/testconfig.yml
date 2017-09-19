@@ -59,7 +59,7 @@ case04:
       action: "Exercised"
       duty: "Fulfilled"
     instances:
-      dummy: "dummy"
+      "http://www.w3.org/ns/odrl/2/delete": "Not-Exercised"
 commentline341234: "Below: cases built on CR-IM examples, numbering follows IM"
 case_imex15:
   filename: "im1_example15"
