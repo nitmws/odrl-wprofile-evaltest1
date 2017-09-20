@@ -1,0 +1,22 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Agreement",
+  "uid": "http://example.com/policy:42",
+  "profile": "http://example.com/odrl:profile:09",
+  "obligation": [{
+      "assigner": "http://example.com/org:43",
+      "assignee": "http://example.com/person:44",
+      "action": [{
+          "rdf:value": {
+            "@id": "odrl:compensate"
+          },
+          "refinement": [
+            {
+              "leftOperand": "payAmount",
+              "operator": "eq",
+              "rightOperand": "500.00",
+              "unit": "http://dbpedia.org/resource/Euro"
+            }]
+        }]
+    }]
+}

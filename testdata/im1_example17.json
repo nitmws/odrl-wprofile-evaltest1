@@ -1,0 +1,20 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Agreement",
+  "uid": "http://example.com/policy:4444",
+  "profile": "http://example.com/odrl:profile:12",
+  "permission": [{
+    "target": "http://example.com/myPhotos:BdayParty",
+    "assigner": "http://example.com/user44",
+    "assignee": {
+      "@type": "PartyCollection",
+      "source":  "http://example.com/user44/friends",
+      "refinement": [{
+        "leftOperand": "foaf:age",
+        "operator": "gt",
+        "rightOperand": "17"
+      }]
+    },
+    "action": "display"
+  }]
+}

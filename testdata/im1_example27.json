@@ -1,0 +1,26 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Policy",
+  "uid": "http://example.com/policy:8888",
+  "profile": "http://example.com/odrl:profile:20",
+  "permission": [{
+    "target": "http://example.com/music/1999.mp3",
+    "assigner": "http://example.com/org/sony-music",
+    "action": "play"
+  },
+    {
+      "target": "http://example.com/music/1999.mp3",
+      "assigner": "http://example.com/org/sony-music",
+      "action": "stream"
+    },
+    {
+      "target": "http://example.com/music/PurpleRain.mp3",
+      "assigner": "http://example.com/org/sony-music",
+      "action": "play"
+    },
+    {
+      "target": "http://example.com/music/PurpleRain.mp3",
+      "assigner": "http://example.com/org/sony-music",
+      "action": "stream"
+    }]
+}

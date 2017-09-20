@@ -1,0 +1,16 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Offer",
+  "uid": "http://example.com/policy:9090",
+  "profile": "http://example.com/odrl:profile:07",
+  "permission": [{
+    "target": "http://example.com/game:9090",
+    "assigner": "http://example.com/org:xyz",
+    "action": "play",
+    "constraint": [{
+      "leftOperand": "dateTime",
+      "operator": "lteq",
+      "rightOperand": "2017-12-31"
+    }]
+  }]
+}
