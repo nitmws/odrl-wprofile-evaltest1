@@ -5,10 +5,11 @@ CASE_TEMPLATE:
   evalpresets:
     defaults:
       constraint: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Not-Exercised"
+      remedyAction: "Exercised"
       action: "Exercised"
-      consequence: "Not-Fulfilled"
-      remedy: "Fulfilled"
     instances:
       "_:b0_b0": "Not-Satisfied"
       "_:b0_b1": "Satisfied"
@@ -19,7 +20,7 @@ case01:
   evalpresets:
     defaults:
       constraint: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b0_b0": "Satisfied"
@@ -31,9 +32,9 @@ case02:
   evalpresets:
     defaults:
       constraint: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
       action: "Exercised"
-      consequence: "Not-Fulfilled"
+      consequenceAction: "Not-Fulfilled"
     instances:
       "http://www.w3.org/ns/odrl/2/attribute": "Not-Exercised"
       "http://www.w3.org/ns/odrl/2/acceptTracking": "Not-Exercised"
@@ -45,7 +46,7 @@ case03:
     defaults:
       constraint: "Satisfied"
       refinement: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b0_b1": "Not-Exercised"
@@ -57,7 +58,7 @@ case04:
       constraint: "Satisfied"
       refinement: "Satisfied"
       action: "Exercised"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
     instances:
       "http://www.w3.org/ns/odrl/2/delete": "Not-Exercised"
 commentline341234: "Below: cases built on CR-IM examples, numbering follows IM"
@@ -70,7 +71,7 @@ case_imex15:
     defaults:
       constraint: "Satisfied"
       refinement: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
       action: "Exercised"
     instances:
       "http://example.com/p:88/C1": "Satisfied"
@@ -81,7 +82,7 @@ case_imex23:
   evalpresets:
     defaults:
       constraint: "Satisfied"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
 case_imex24:
   filename: "im1_example24"
   evalRuleproperty: "prohibition.1"
@@ -89,6 +90,6 @@ case_imex24:
     defaults:
       constraint: "Satisfied"
       action: "Exercised"
-      duty: "Fulfilled"
+      dutyAction: "Exercised"
     instances:
       dummy: "dummy"

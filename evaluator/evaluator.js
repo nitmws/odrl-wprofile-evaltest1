@@ -416,7 +416,8 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
     }
     for (let i=0; i < dutyQuads.length; i++) {
         let dutyId = dutyQuads[i].object
-        let dutyEvalResult = evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName)
+        let dutyEvalResult = evaluateDutyInstance(policyTriplestore, dutyId, true, odrlVocab.duty, testlogger, testcaseName)
+            // evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName)
         switch (dutyEvalResult) {
             case evalDutyState[0]:
                 // duty is Fulfilled --> continue processing
@@ -459,14 +460,14 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
     }
     for (let i=0; i < remedyQuads.length; i++) {
         let remedyId = remedyQuads[i].object
-        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, false, testlogger, testcaseName)
+        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, false, odrlVocab.remedy, testlogger, testcaseName)
         switch (remedyEvalResult) {
             case evalDutyState[0]:
                 // remedy is Fulfilled --> continue processing
                 break;
             case evalDutyState[1]:
                 // remedy is Not-Fulfilled --> break processing an return Not-Fulfilled
-                testlogger.addLine("TESTRESULT: Evaluation of all remedies of '" + ruleId + "', status = " + evalDutyState[1] + " (constraints Not-Satisfied)")
+                testlogger.addLine("TESTRESULT: Evaluation of all remedies of '" + ruleId + "', status = " + evalDutyState[1] + " (constraint(s) Not-Satisfied)")
                 return evalDutyState[1]
                 break;
             case evalDutyState[2]:
@@ -485,15 +486,7 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
 }
 exports.evaluateAll_remedyDuties = evaluateAll_remedyDuties
 
-/**
- * Evaluates an instance of Duty Class referenced by a duty or obligation property.
- * This requires to include consequence properties.
- * @param policyTriplestore
- * @param dutyId
- * @param testlogger
- * @param testcaseName
- * @returns {*}
- */
+/*
 function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName) {
     if (!policyTriplestore) {
         return evalDutyState[3]
@@ -506,21 +499,24 @@ function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, t
     return dutyState
 }
 exports.evaluate_dutyOr_obligationDuty = evaluate_dutyOr_obligationDuty
+*/
 
 /**
  * Evaluates the core of an instance of a Duty Class
  * @param policyTriplestore
  * @param dutyId
  * @param evalConsequences - boolean (true for duty and obligation Duties, else false)
+ * @param propertyId
  * @param testlogger
  * @param testcaseName
  * @returns {*}
  */
-function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testlogger, testcaseName){
+function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, propertyId, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalDutyState[3]
     }
 
+    testlogger.addLine("NEXT STEP: Evaluation of Duty instance '" + dutyId + "', referenced by '" + propertyId + "'")
     // Evaluate the Constraints
     let constraintsEvalResult =
         evaluateAllConstraints(policyTriplestore, dutyId, testlogger, testcaseName)
@@ -545,10 +541,12 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
 
     // Evaluate the Action
     let actionEvalResult =
-        evaluateActionExercised(policyTriplestore, dutyId, testlogger, testcaseName)
+        evaluateActionExercised(policyTriplestore, dutyId, propertyId, testlogger, testcaseName)
     switch(actionEvalResult){
         case evalActionExersState[0]:
-            // Action was exercised --> continue processing
+            // Action was exercised --> break and return Duty Fulfilled
+            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[0] + " (action exercised)")
+            return evalDutyState[0]
             break
         case evalActionExersState[1]:
             if (!evalConsequences) {
@@ -559,9 +557,9 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
             // else: Action was Not-Exercised --> evaluate the consequences
             break;
         case evalActionExersState[2]:
-            // Action is Not-Existing (due to refinements) --> return Duty Not-Fulfilled
-            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not existing)")
-            return evalDutyState[1]
+            // Action is Not-Existing (due to refinements) --> break and return ERROR
+            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[3] + " (action not existing)")
+            return evalDutyState[3]
             break;
         case evalActionExersState[3]:
             // constraints returned an ERROR --> do the same
@@ -569,6 +567,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
             break;
     }
 
+    // actually the function should get there only in case of to-be-evaluated consequences, but let's be strict:
     if (evalConsequences) {
         if (actionEvalResult === evalActionExersState[1]) {
             // action Not-Exercised: evaluate the Consequences
@@ -585,7 +584,8 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
                 // iterate over all existing Consequence instances
                 for (let i = 0; i < consequQuads.length; i++) {
                     let consequId = consequQuads[i].object
-                    let consequEvalResult = evaluateDutyInstance(policyTriplestore, consequId, false, testlogger, testcaseName)
+                    let consequEvalResult = evaluateDutyInstance(policyTriplestore, consequId, false,
+                        odrlVocab.consequence, testlogger, testcaseName)
                     switch (consequEvalResult) {
                         case evalDutyState[0]:
                             // consequence is Fulfilled --> set consequenceFulfilled, continue processing
@@ -620,6 +620,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
         }
     }
 
+ /*
     if (testcaseName) {
         let testResultPreset = ""
         if (configs.testconfig[testcaseName].evalpresets.instances[dutyId]) {
@@ -632,7 +633,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
             + testResultPreset + " (preset)")
         return testResultPreset
     }
-
+*/
     /*
         NOTE: a full implementation of an Evaluator should start processing the Duty now.
             As this is considered as black-box by the ODRL Recommendation this processing and
@@ -643,7 +644,6 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, testl
 
     */
     return evalDutyState[3] // actually the function shouldn't get there because of the presets above
-
 }
 exports.evaluateDutyInstance = evaluateDutyInstance
 
@@ -657,11 +657,12 @@ exports.evaluateDutyInstance = evaluateDutyInstance
  * Checks if existing refinements are satisfied and in this case if the action has been exercised
  * @param policyTriplestore
  * @param subjectId
+ * @param propertyId
  * @param testlogger
  * @param testcaseName
  * @returns {*}
  */
-function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testcaseName){
+function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testlogger, testcaseName){
     if (!policyTriplestore){
         return evalActionExersState[3]
     }
@@ -675,7 +676,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
         actionId = actionQuads[0].object
     }
 
-    testlogger.addLine("NEXT STEP: Evaluation of ActionExercised of action '" + actionId + "'")
+    testlogger.addLine("NEXT STEP: Evaluation of ActionExercised of action (of '" + subjectId + "')")
 
     // Evaluate the refinement Constraints
     let refinementsEvalResult =
@@ -699,15 +700,31 @@ function evaluateActionExercised(policyTriplestore, subjectId, testlogger, testc
             break;
     }
 
+    // retrieve and return preset value
     if (testcaseName) {
         let testResultPreset = ""
         if (configs.testconfig[testcaseName].evalpresets.instances[actionId]) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[actionId]
         }
+        if (testResultPreset === "" && propertyId === odrlVocab.prohibition && configs.testconfig[testcaseName].evalpresets.defaults.prohibitionAction) {
+            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.prohibitionAction
+        }
+        if (testResultPreset === "" && propertyId === odrlVocab.duty && configs.testconfig[testcaseName].evalpresets.defaults.dutyAction) {
+            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.dutyAction
+        }
+        if (testResultPreset === "" && propertyId === odrlVocab.obligation && configs.testconfig[testcaseName].evalpresets.defaults.obligationAction) {
+            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.obligationAction
+        }
+        if (testResultPreset === "" && propertyId === odrlVocab.remedy && configs.testconfig[testcaseName].evalpresets.defaults.remedyAction) {
+            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.remedyAction
+        }
+        if (testResultPreset === "" && propertyId === odrlVocab.consequence && configs.testconfig[testcaseName].evalpresets.defaults.consequenceAction) {
+            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.consequenceAction
+        }
         if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.action) {
             testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.action
         }
-        testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "', status = "
+        testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "' (action of '" + subjectId + "'), status = "
             + testResultPreset + " (preset)")
         return testResultPreset
     }
@@ -805,7 +822,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, testcase
     // testlogger.addLine("NEXT STEP: Evaluation of ActionExercised")
 
     let actionExercisedEvalResult =
-        evaluateActionExercised(policyTriplestore, evalRuleid, testlogger, testcaseName)
+        evaluateActionExercised(policyTriplestore, evalRuleid, odrlVocab.prohibition, testlogger, testcaseName)
     switch(actionExercisedEvalResult){
         case evalActionExersState[0]:
             // action was exercised - continue processing
