@@ -4,7 +4,7 @@ let fs = require("fs")
 let jsonfile = require('jsonfile')
 let jsonld = require('jsonld')
 let N3 = require("n3")
-let odrlVocab = require("../model/vocabulary")
+let odrlCoreVocab = require("../model/odrlCoreVocabulary")
 let configs = require("../services/configs");
 let testlogger = require("../services/testlogger")
 let utils = require("../services/utils")
@@ -27,7 +27,8 @@ function doTheTest(caseName){
         console.log("case name <" + caseName + "> is unknown or not properly defined - TEST ENDED")
         return
     }
-    let testFn = configs.testconfig[caseName].filename
+    let evalContext = configs.testconfig[caseName]
+    let testFn = evalContext.filename
 
 
     let tlog = new testlogger.Testlogger()
@@ -58,22 +59,22 @@ function doTheTest(caseName){
         policyN3store.addTriples(policyN3triples)
         tlog.addLine("MSG: JSON-LD read, parsed, transformed to RDF, files written ")
 
-        let permissionQuads = policyN3store.getTriplesByIRI(null, odrlVocab.permission, null, null)
-        let prohibitionQuads = policyN3store.getTriplesByIRI(null, odrlVocab.prohibition, null, null)
-        let obligationQuads = policyN3store.getTriplesByIRI(null, odrlVocab.obligation, null, null)
+        let permissionQuads = policyN3store.getTriplesByIRI(null, odrlCoreVocab.permission, null, null)
+        let prohibitionQuads = policyN3store.getTriplesByIRI(null, odrlCoreVocab.prohibition, null, null)
+        let obligationQuads = policyN3store.getTriplesByIRI(null, odrlCoreVocab.obligation, null, null)
 
 
         // START evaluating a specific Rule
         let evalRuleid = ""
         let evalRuleFound = false
         let evalRulePropertyname = ""
-        if (configs.testconfig[caseName].evalRuleid){
-            evalRuleid = configs.testconfig[caseName].evalRuleid
+        if (evalContext.evalRuleid){
+            evalRuleid = evalContext.evalRuleid
             evalRuleFound = true
         }
         else {
-            if (configs.testconfig[caseName].evalRuleproperty){
-                let evalRuleproperty = configs.testconfig[caseName].evalRuleproperty
+            if (evalContext.evalRuleproperty){
+                let evalRuleproperty = evalContext.evalRuleproperty
                 let strArr = evalRuleproperty.split(".")
                 let evalRulepropertyname = strArr[0]
                 let evalRulepropertyindexnr = parseInt(strArr[1], 10)
@@ -121,14 +122,14 @@ function doTheTest(caseName){
 
         // Evaluate the Constraints
         let constraintsEvalResult =
-            evaluator.evaluateAllConstraints(policyN3store, evalRuleid, tlog, caseName)
+            evaluator.evaluateAllConstraints(policyN3store, evalRuleid, tlog, evalContext)
         tlog.addLine("TESTRESULT: Evaluation of all constraints of the Rule, status = " + constraintsEvalResult)
 
         if (constraintsEvalResult === evaluator.evalConstraintState[1]){
             tlog.addLine("TESTRESULT: Constraint(s) of the Rule is/are Not-Satisfied - no further processing")
         }
         else {
-            if (evalRulePropertyname == "") {
+            if (evalRulePropertyname === "") {
                 // get the subclass of the Rule
                 let ruleQuads = policyN3store.getTriplesByIRI(null, null, evalRuleid, null)
                 if (ruleQuads) {
@@ -137,14 +138,13 @@ function doTheTest(caseName){
                 tlog.addLine("TESTRESULT: inferred property referring the to-be-tested Rule = " + evalRulePropertyname)
             }
             switch (evalRulePropertyname) {
-                case odrlVocab.permission:
-                    evaluator.evaluatePermission(policyN3store, evalRuleid, tlog, caseName)
-                    // _doPermissionTest(policyN3store, evalRuleid, tlog, caseName)
+                case odrlCoreVocab.permission:
+                    evaluator.evaluatePermission(policyN3store, evalRuleid, tlog, evalContext)
                     break
-                case odrlVocab.prohibition:
-                    evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, caseName)
+                case odrlCoreVocab.prohibition:
+                    evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, evalContext)
                     break;
-                case odrlVocab.obligation:
+                case odrlCoreVocab.obligation:
                     break;
             }
         }

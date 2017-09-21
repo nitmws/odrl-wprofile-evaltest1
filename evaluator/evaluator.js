@@ -1,7 +1,7 @@
 "use strict"
 
-let odrlVocab = require("../model/vocabulary")
-let configs = require("../services/configs")
+let odrlVocab = require("../model/odrlCoreVocabulary")
+// let configs = require("../services/configs")
 
 /**
  * The states resulting from the evaluation of an ODRL Rule etc use strings
@@ -29,16 +29,16 @@ exports.evalActionExersState = evalActionExersState
  * @param policyTriplestore
  * @param ruleId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {string|string} - a value of the enumeration evalConstraintState
  */
-function evaluateAllConstraints(policyTriplestore, ruleId, testlogger, testcaseName) {
+function evaluateAllConstraints(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
         return evalConstraintState[3]
     }
 
     return evaluateConstraintClassInstances(policyTriplestore, ruleId,
-        odrlVocab.constraint, testlogger, testcaseName)
+        odrlVocab.constraint, testlogger, evalContext)
 }
 exports.evaluateAllConstraints = evaluateAllConstraints
 
@@ -47,16 +47,16 @@ exports.evaluateAllConstraints = evaluateAllConstraints
  * @param policyTriplestore
  * @param subjectId - id of the Action/AssetCollection/PartyCollection
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {string|string} - a value of the enumeration evalConstraintState
  */
-function evaluateAllRefinements(policyTriplestore, subjectId, testlogger, testcaseName) {
+function evaluateAllRefinements(policyTriplestore, subjectId, testlogger, evalContext) {
     if (!policyTriplestore) {
         return evalConstraintState[3]
     }
 
     let evaluationResult = evaluateConstraintClassInstances(policyTriplestore, subjectId,
-        odrlVocab.refinement, testlogger, testcaseName)
+        odrlVocab.refinement, testlogger, evalContext)
     testlogger.addLine("TESTRESULT: Evaluation of all refinements of '" + subjectId + "', status = " + evaluationResult)
 
     return evaluationResult
@@ -69,10 +69,10 @@ exports.evaluateAllRefinements = evaluateAllRefinements
  * @param subjectId - id of the Constraint Class instance
  * @param propertyId - id of the property constraint or refinement
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*} - a value of the enumeration evalConstraintState
  */
-function evaluateConstraintClassInstances(policyTriplestore, subjectId, propertyId, testlogger, testcaseName){
+function evaluateConstraintClassInstances(policyTriplestore, subjectId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
@@ -85,7 +85,7 @@ function evaluateConstraintClassInstances(policyTriplestore, subjectId, property
     else {
         for (let i = 0; i < constraintQuads.length; i++) {
             let constraintId = constraintQuads[i].object
-            let constrEvalResult = preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            let constrEvalResult = preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             switch (constrEvalResult) {
                 case evalConstraintState[0]:
                     break;
@@ -118,9 +118,9 @@ function evaluateConstraintClassInstances(policyTriplestore, subjectId, property
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  */
-function preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+function preevaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     // check the existence of a Logical Constraint operand:
     let lcoperand = ""
     let lcopTestQuads = policyTriplestore.getTriplesByIRI(constraintId, odrlVocab.lc_or, null, null)
@@ -140,19 +140,19 @@ function preevaluateConstraintClassInstance(policyTriplestore, constraintId, pro
 
     switch(lcoperand){
         case "": // no Logical Constraint operand: is a plain/atomic Constraint
-            return evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            return evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             break
         case odrlVocab.lc_or:
-            return evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            return evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             break
         case odrlVocab.lc_and:
-            return evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            return evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             break
         case odrlVocab.lc_xone:
-            return evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            return evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             break
         case odrlVocab.lc_andSequence:
-            return evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, testcaseName)
+            return evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, evalContext)
             break
     }
 }
@@ -164,23 +164,23 @@ exports.preevaluateConstraintClassInstance = preevaluateConstraintClassInstance
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*} - a value of the enumeration evalConstraintState
  */
-function evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, testcaseName){
+function evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
 
     switch(propertyId){
         case odrlVocab.constraint:
-            if (testcaseName) {
+            if (evalContext) {
                 let testResultPreset = ""
-                if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
+                if (evalContext.evalpresets.instances[constraintId]) {
+                    testResultPreset = evalContext.evalpresets.instances[constraintId]
                 }
-                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
+                if (testResultPreset === "" && evalContext.evalpresets.defaults.constraint) {
+                    testResultPreset = evalContext.evalpresets.defaults.constraint
                 }
                 testlogger.addLine("TESTRESULT: Evaluation of Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
@@ -188,13 +188,13 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
             }
             break
         case odrlVocab.refinement:
-            if (testcaseName) {
+            if (evalContext) {
                 let testResultPreset = ""
-                if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
+                if (evalContext.evalpresets.instances[constraintId]) {
+                    testResultPreset = evalContext.evalpresets.instances[constraintId]
                 }
-                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.refinement) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.refinement
+                if (testResultPreset === "" && evalContext.evalpresets.defaults.refinement) {
+                    testResultPreset = evalContext.evalpresets.defaults.refinement
                 }
                 testlogger.addLine("TESTRESULT: Evaluation of Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
@@ -205,13 +205,13 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
         case odrlVocab.lc_and:
         case odrlVocab.lc_andSequence:
         case odrlVocab.lc_xone:
-            if (testcaseName) {
+            if (evalContext) {
                 let testResultPreset = ""
-                if (configs.testconfig[testcaseName].evalpresets.instances[constraintId]) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[constraintId]
+                if (evalContext.evalpresets.instances[constraintId]) {
+                    testResultPreset = evalContext.evalpresets.instances[constraintId]
                 }
-                if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.constraint) {
-                    testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.constraint
+                if (testResultPreset === "" && evalContext.evalpresets.defaults.constraint) {
+                    testResultPreset = evalContext.evalpresets.defaults.constraint
                 }
                 testlogger.addLine("TESTRESULT: Evaluation of Logical Constraint instance '" + constraintId + "' (a "
                     + propertyId +  "), status = " + testResultPreset + " (preset)")
@@ -235,10 +235,10 @@ exports.evaluateConstraintClassInstance = evaluateConstraintClassInstance
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
@@ -250,7 +250,7 @@ function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId
     }
     for (let i = 0; i < lcoperandValueQuads.length; i++) {
         let constraintId = lcoperandValueQuads[i].object
-        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_or, testlogger, testcaseName)
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_or, testlogger, evalContext)
         switch (constrEvalResult) {
             case evalConstraintState[0]:
                 satisfiedCount++
@@ -276,10 +276,10 @@ function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+function evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
@@ -291,7 +291,7 @@ function evaluateLogicalConstraintXone(policyTriplestore, constraintId, property
     }
     for (let i = 0; i < lcoperandValueQuads.length; i++) {
         let constraintId = lcoperandValueQuads[i].object
-        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_xone, testlogger, testcaseName)
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_xone, testlogger, evalContext)
         switch (constrEvalResult) {
             case evalConstraintState[0]:
                 satisfiedCount++
@@ -317,10 +317,10 @@ function evaluateLogicalConstraintXone(policyTriplestore, constraintId, property
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
@@ -332,7 +332,7 @@ function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyI
     }
     for (let i = 0; i < lcoperandValueQuads.length; i++) {
         let constraintId = lcoperandValueQuads[i].object
-        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_and, testlogger, testcaseName)
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_and, testlogger, evalContext)
         switch (constrEvalResult) {
             case evalConstraintState[0]:
                 satisfiedCount++
@@ -358,10 +358,10 @@ function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyI
  * @param constraintId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, testcaseName) {
+function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
         return evalConstraintState[3]
     }
@@ -373,7 +373,7 @@ function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, p
     }
     for (let i = 0; i < lcoperandValueQuads.length; i++) {
         let constraintId = lcoperandValueQuads[i].object
-        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_andSequence, testlogger, testcaseName)
+        let constrEvalResult = evaluateConstraintClassInstance(policyTriplestore, constraintId, odrlVocab.lc_andSequence, testlogger, evalContext)
         switch (constrEvalResult) {
             case evalConstraintState[0]:
                 satisfiedCount++
@@ -403,10 +403,10 @@ function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, p
  * @param policyTriplestore
  * @param ruleId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseName) {
+function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
         return evalDutyState[3]
     }
@@ -416,8 +416,8 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, testcaseN
     }
     for (let i=0; i < dutyQuads.length; i++) {
         let dutyId = dutyQuads[i].object
-        let dutyEvalResult = evaluateDutyInstance(policyTriplestore, dutyId, true, odrlVocab.duty, testlogger, testcaseName)
-            // evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName)
+        let dutyEvalResult = evaluateDutyInstance(policyTriplestore, dutyId, true, odrlVocab.duty, testlogger, evalContext)
+            // evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, evalContext)
         switch (dutyEvalResult) {
             case evalDutyState[0]:
                 // duty is Fulfilled --> continue processing
@@ -447,10 +447,10 @@ exports.evaluateAll_dutyDuties = evaluateAll_dutyDuties
  * @param policyTriplestore
  * @param ruleId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcaseName) {
+function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
         return evalDutyState[3]
     }
@@ -460,7 +460,7 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
     }
     for (let i=0; i < remedyQuads.length; i++) {
         let remedyId = remedyQuads[i].object
-        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, false, odrlVocab.remedy, testlogger, testcaseName)
+        let remedyEvalResult = evaluateDutyInstance(policyTriplestore, remedyId, false, odrlVocab.remedy, testlogger, evalContext)
         switch (remedyEvalResult) {
             case evalDutyState[0]:
                 // remedy is Fulfilled --> continue processing
@@ -487,13 +487,13 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, testcas
 exports.evaluateAll_remedyDuties = evaluateAll_remedyDuties
 
 /*
-function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, testcaseName) {
+function evaluate_dutyOr_obligationDuty(policyTriplestore, dutyId, testlogger, evalContext) {
     if (!policyTriplestore) {
         return evalDutyState[3]
     }
 
     // evaluate the Duty instance, include evaluation of consequences
-    let dutyState = evaluateDutyInstance(policyTriplestore, dutyId, true, testlogger, testcaseName)
+    let dutyState = evaluateDutyInstance(policyTriplestore, dutyId, true, testlogger, evalContext)
 
     // testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + dutyState)
     return dutyState
@@ -508,10 +508,10 @@ exports.evaluate_dutyOr_obligationDuty = evaluate_dutyOr_obligationDuty
  * @param evalConsequences - boolean (true for duty and obligation Duties, else false)
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, propertyId, testlogger, testcaseName){
+function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
         return evalDutyState[3]
     }
@@ -519,7 +519,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
     testlogger.addLine("NEXT STEP: Evaluation of Duty instance '" + dutyId + "', referenced by '" + propertyId + "'")
     // Evaluate the Constraints
     let constraintsEvalResult =
-        evaluateAllConstraints(policyTriplestore, dutyId, testlogger, testcaseName)
+        evaluateAllConstraints(policyTriplestore, dutyId, testlogger, evalContext)
     switch(constraintsEvalResult){
         case evalConstraintState[0]:
             // constraints are Satisified --> continue processing
@@ -541,7 +541,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
 
     // Evaluate the Action
     let actionEvalResult =
-        evaluateActionExercised(policyTriplestore, dutyId, propertyId, testlogger, testcaseName)
+        evaluateActionExercised(policyTriplestore, dutyId, propertyId, testlogger, evalContext)
     switch(actionEvalResult){
         case evalActionExersState[0]:
             // Action was exercised --> break and return Duty Fulfilled
@@ -585,7 +585,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
                 for (let i = 0; i < consequQuads.length; i++) {
                     let consequId = consequQuads[i].object
                     let consequEvalResult = evaluateDutyInstance(policyTriplestore, consequId, false,
-                        odrlVocab.consequence, testlogger, testcaseName)
+                        odrlVocab.consequence, testlogger, evalContext)
                     switch (consequEvalResult) {
                         case evalDutyState[0]:
                             // consequence is Fulfilled --> set consequenceFulfilled, continue processing
@@ -621,13 +621,13 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
     }
 
  /*
-    if (testcaseName) {
+    if (evalContext) {
         let testResultPreset = ""
-        if (configs.testconfig[testcaseName].evalpresets.instances[dutyId]) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[dutyId]
+        if (evalContext.evalpresets.instances[dutyId]) {
+            testResultPreset = evalContext.evalpresets.instances[dutyId]
         }
-        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.duty) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.duty
+        if (testResultPreset === "" && evalContext.evalpresets.defaults.duty) {
+            testResultPreset = evalContext.evalpresets.defaults.duty
         }
         testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = "
             + testResultPreset + " (preset)")
@@ -659,10 +659,10 @@ exports.evaluateDutyInstance = evaluateDutyInstance
  * @param subjectId
  * @param propertyId
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  * @returns {*}
  */
-function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testlogger, testcaseName){
+function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
         return evalActionExersState[3]
     }
@@ -680,7 +680,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testl
 
     // Evaluate the refinement Constraints
     let refinementsEvalResult =
-        evaluateAllRefinements(policyTriplestore, actionId, testlogger, testcaseName)
+        evaluateAllRefinements(policyTriplestore, actionId, testlogger, evalContext)
     switch(refinementsEvalResult){
         case evalConstraintState[0]:
             // refinements are Satisified --> continue processing
@@ -701,28 +701,28 @@ function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testl
     }
 
     // retrieve and return preset value
-    if (testcaseName) {
+    if (evalContext) {
         let testResultPreset = ""
-        if (configs.testconfig[testcaseName].evalpresets.instances[actionId]) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.instances[actionId]
+        if (evalContext.evalpresets.instances[actionId]) {
+            testResultPreset = evalContext.evalpresets.instances[actionId]
         }
-        if (testResultPreset === "" && propertyId === odrlVocab.prohibition && configs.testconfig[testcaseName].evalpresets.defaults.prohibitionAction) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.prohibitionAction
+        if (testResultPreset === "" && propertyId === odrlVocab.prohibition && evalContext.evalpresets.defaults.prohibitionAction) {
+            testResultPreset = evalContext.evalpresets.defaults.prohibitionAction
         }
-        if (testResultPreset === "" && propertyId === odrlVocab.duty && configs.testconfig[testcaseName].evalpresets.defaults.dutyAction) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.dutyAction
+        if (testResultPreset === "" && propertyId === odrlVocab.duty && evalContext.evalpresets.defaults.dutyAction) {
+            testResultPreset = evalContext.evalpresets.defaults.dutyAction
         }
-        if (testResultPreset === "" && propertyId === odrlVocab.obligation && configs.testconfig[testcaseName].evalpresets.defaults.obligationAction) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.obligationAction
+        if (testResultPreset === "" && propertyId === odrlVocab.obligation && evalContext.evalpresets.defaults.obligationAction) {
+            testResultPreset = evalContext.evalpresets.defaults.obligationAction
         }
-        if (testResultPreset === "" && propertyId === odrlVocab.remedy && configs.testconfig[testcaseName].evalpresets.defaults.remedyAction) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.remedyAction
+        if (testResultPreset === "" && propertyId === odrlVocab.remedy && evalContext.evalpresets.defaults.remedyAction) {
+            testResultPreset = evalContext.evalpresets.defaults.remedyAction
         }
-        if (testResultPreset === "" && propertyId === odrlVocab.consequence && configs.testconfig[testcaseName].evalpresets.defaults.consequenceAction) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.consequenceAction
+        if (testResultPreset === "" && propertyId === odrlVocab.consequence && evalContext.evalpresets.defaults.consequenceAction) {
+            testResultPreset = evalContext.evalpresets.defaults.consequenceAction
         }
-        if (testResultPreset === "" && configs.testconfig[testcaseName].evalpresets.defaults.action) {
-            testResultPreset = configs.testconfig[testcaseName].evalpresets.defaults.action
+        if (testResultPreset === "" && evalContext.evalpresets.defaults.action) {
+            testResultPreset = evalContext.evalpresets.defaults.action
         }
         testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "' (action of '" + subjectId + "'), status = "
             + testResultPreset + " (preset)")
@@ -742,9 +742,9 @@ exports.evaluateActionExercised = evaluateActionExercised
  * @param policyTriplestore
  * @param evalRuleid
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  */
-function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseName ){
+function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalContext ){
     // retrieve the actionId from the class of the subjectId
     let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
     let actionId = ""
@@ -758,7 +758,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
 
     // Evaluate the refinement Constraints of the action
     let refinementsEvalResult =
-        evaluateAllRefinements(policyTriplestore, actionId, testlogger, testcaseName)
+        evaluateAllRefinements(policyTriplestore, actionId, testlogger, evalContext)
     switch(refinementsEvalResult){
         case evalConstraintState[0]:
             // refinements are Satisified --> continue processing
@@ -778,7 +778,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, testcaseN
             break;
     }
 
-    let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
+    let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, evalContext)
     // testlogger.addLine("TESTRESULT: Evaluation of all duty(ies), status = " + dutyEvalResult)
     let permissionStateIdx = 0
     switch(dutyEvalResult){
@@ -805,9 +805,9 @@ exports.evaluatePermission = evaluatePermission
  * @param policyTriplestore
  * @param evalRuleid
  * @param testlogger
- * @param testcaseName
+ * @param evalContext
  */
-function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, testcaseName ){
+function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalContext ){
     // retrieve the actionId from the class of the subjectId
     let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlVocab.action, null, null)
     let actionId = ""
@@ -822,7 +822,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, testcase
     // testlogger.addLine("NEXT STEP: Evaluation of ActionExercised")
 
     let actionExercisedEvalResult =
-        evaluateActionExercised(policyTriplestore, evalRuleid, odrlVocab.prohibition, testlogger, testcaseName)
+        evaluateActionExercised(policyTriplestore, evalRuleid, odrlVocab.prohibition, testlogger, evalContext)
     switch(actionExercisedEvalResult){
         case evalActionExersState[0]:
             // action was exercised - continue processing
@@ -849,7 +849,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, testcase
 
     // action has been exercised: evaluate the satisfaction of the remedies
     testlogger.addLine("NEXT STEP: Action of Prohibition exercised: evaluation of remedies")
-    let remedyEvalResult = evaluateAll_remedyDuties(policyTriplestore, evalRuleid, testlogger, testcaseName)
+    let remedyEvalResult = evaluateAll_remedyDuties(policyTriplestore, evalRuleid, testlogger, evalContext)
     testlogger.addLine("TESTRESULT: Evaluation of all remedy(ies), status = " + remedyEvalResult)
     let prohibitionStateIdx = 0
     switch(remedyEvalResult){
