@@ -20,7 +20,8 @@ CASE99: = the only variable name which must be changed: it sets the name of the 
                     Note: either evalRuleid or  evalRuleproperty MUST be used
   evalpresets: = this section defines preset values
     defaults: = this section defines preset values for any instance of the used property names if no preset is defined in the instances section below
-      constraint: "Satisfied" = preset value of any constraint instance
+      constraint: "Satisfied" = preset value of any constraint Constraint
+      refinement: "Satisfied" = preset value of any refinement Constraint
       dutyAction: "Exercised" =  preset value of the action in any duty
       obligationAction: "Exercised" = preset value of the action of any obligation
       consequenceAction: "Not-Exercised"  = preset value of the action of any consequence

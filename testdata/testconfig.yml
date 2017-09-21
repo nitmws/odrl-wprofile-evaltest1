@@ -2,17 +2,145 @@ CASE_TEMPLATE:
   filename: "...no path, not extension..."
   description: "Short description of the case"
   evalRuleid: "http://example.com/permission:01"
+  OR: "only one of evaluRuleid or evalRuleProperty"
+  evalRuleproperty: "prohibition.1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
+      refinement: "Satisfied"
       dutyAction: "Exercised"
       obligationAction: "Exercised"
       consequenceAction: "Not-Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
-      "_:b0_b0": "Not-Satisfied"
-      "_:b0_b1": "Satisfied"
+      "_:b9999": "Not-Satisfied"
+comment12421: "Below test cases for the ODRL Evaluator test"
+case_imex13a:
+  filename: "im1_example13"
+  description: "Permission with constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex13b:
+  filename: "im1_example13"
+  description: "Permission with constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Not-Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex14a:
+  filename: "im1_example14"
+  description: "Permission with action refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex14b:
+  filename: "im1_example14"
+  description: "Permission with action refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex15a:
+  filename: "im1_example15"
+  description: "Permission with Logical Constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "http://example.com/p:88/C1": "Satisfied"
+      "http://example.com/p:88/C2": "Satisfied"
+case_imex15b:
+  filename: "im1_example15"
+  description: "Permission with Logical Constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "http://example.com/p:88/C1": "Satisfied"
+      "http://example.com/p:88/C2": "Not-Satisfied"
+case_imex15c:
+  filename: "im1_example15"
+  description: "Permission with Logical Constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "http://example.com/p:88/C1": "Not-Satisfied"
+      "http://example.com/p:88/C2": "Satisfied"
+case_imex15d:
+  filename: "im1_example15"
+  description: "Permission with Logical Constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "http://example.com/p:88/C1": "Not-Satisfied"
+      "http://example.com/p:88/C2": "Not-Satisfied"
+comment34123423: "Below nitmws test cases"
 case01:
   filename: "nitt_constraints1"
   description: "Test of Constraints"
@@ -62,7 +190,7 @@ case04:
     instances:
       "http://www.w3.org/ns/odrl/2/delete": "Not-Exercised"
 commentline341234: "Below: cases built on CR-IM examples, numbering follows IM"
-case_imex15:
+case_test-imex15:
   filename: "im1_example15"
   description: "Refinement with XONE"
   evalRuleid001: "_:b0_b0"
@@ -76,14 +204,14 @@ case_imex15:
     instances:
       "http://example.com/p:88/C1": "Satisfied"
       "http://example.com/p:88/C2": "Not-Satisfied"
-case_imex23:
+case_test-imex23:
   filename: "im1_example23"
   evalRuleproperty: "permission.1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
       dutyAction: "Exercised"
-case_imex24:
+case_test-imex24:
   filename: "im1_example24"
   evalRuleproperty: "prohibition.1"
   evalpresets:

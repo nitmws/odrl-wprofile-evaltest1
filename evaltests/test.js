@@ -30,11 +30,14 @@ function doTheTest(caseName){
     let evalContext = configs.testconfig[caseName]
     let testFn = evalContext.filename
 
-
     let tlog = new testlogger.Testlogger()
 
     tlog.addLine("START with test case: " + caseName + "  -- on/at " + utils.getDateTimeNowISO())
     console.log("START with test case: " + caseName + "  -- on/at " + utils.getDateTimeNowISO())
+
+    if (evalContext.description) {
+        tlog.addLine("DESCRIPTION: " + evalContext.description)
+    }
 
     // ingest the JSON-LD test file
     let jsonldFp = "testdata/" + testFn + ".json"
