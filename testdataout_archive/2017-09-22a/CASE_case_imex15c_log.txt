@@ -1,0 +1,10 @@
+ START with test case: case_imex15c  -- on/at 2017-09-22T14:24:22.593Z
+ DESCRIPTION: Permission with Logical Constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b6_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of Logical Constraint instance 'http://example.com/p:88/C1' (a http://www.w3.org/ns/odrl/2/xone), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of Logical Constraint instance 'http://example.com/p:88/C2' (a http://www.w3.org/ns/odrl/2/xone), status = Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b6_b1', status = Satisfied
+ TESTRESULT-FINAL: Evaluation of the full Permission instance, status = Allowed
+ CLOSING test case: case_imex15c  -- on/at 2017-09-22T14:24:23.170Z

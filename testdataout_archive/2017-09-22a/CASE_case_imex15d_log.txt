@@ -1,0 +1,10 @@
+ START with test case: case_imex15d  -- on/at 2017-09-22T14:24:22.595Z
+ DESCRIPTION: Permission with Logical Constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b7_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of Logical Constraint instance 'http://example.com/p:88/C1' (a http://www.w3.org/ns/odrl/2/xone), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of Logical Constraint instance 'http://example.com/p:88/C2' (a http://www.w3.org/ns/odrl/2/xone), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b7_b1', status = Not-Satisfied
+ TESTRESULT-FINAL: Evaluation of ActionExercised '_:b7_b1' - refinments, status = Not-Existing (action not existing by Not-Satisfied refinement)
+ CLOSING test case: case_imex15d  -- on/at 2017-09-22T14:24:23.176Z

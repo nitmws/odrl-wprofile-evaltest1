@@ -1,0 +1,88 @@
+[
+  {
+    "@type": [
+      "http://www.w3.org/ns/odrl/2/Offer"
+    ],
+    "http://www.w3.org/ns/odrl/2/permission": [
+      {
+        "http://www.w3.org/ns/odrl/2/action": [
+          {
+            "@id": "http://www.w3.org/ns/odrl/2/play"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assigner": [
+          {
+            "@id": "http://example.com/assigner:sony"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/duty": [
+          {
+            "http://www.w3.org/ns/odrl/2/action": [
+              {
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#value": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/compensate"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/refinement": [
+                  {
+                    "http://www.w3.org/ns/odrl/2/leftOperand": [
+                      {
+                        "@id": "http://www.w3.org/ns/odrl/2/payAmount"
+                      }
+                    ],
+                    "http://www.w3.org/ns/odrl/2/operator": [
+                      {
+                        "@id": "http://www.w3.org/ns/odrl/2/eq"
+                      }
+                    ],
+                    "http://www.w3.org/ns/odrl/2/rightOperand": [
+                      {
+                        "@value": "5.00"
+                      }
+                    ],
+                    "http://www.w3.org/ns/odrl/2/unit": [
+                      {
+                        "@value": "http://dbpedia.org/resource/Euro"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/constraint": [
+              {
+                "http://www.w3.org/ns/odrl/2/leftOperand": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/event"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/operator": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/lt"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/rightOperand": [
+                  {
+                    "@value": "policyUsage"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/target": [
+          {
+            "@id": "http://example.com/music/1999.mp3"
+          }
+        ]
+      }
+    ],
+    "http://www.w3.org/ns/odrl/2/profile": [
+      {
+        "@id": "http://example.com/odrl:profile:09"
+      }
+    ],
+    "@id": "http://example.com/policy:88"
+  }
+]

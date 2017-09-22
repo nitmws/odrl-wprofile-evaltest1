@@ -1,0 +1,11 @@
+ START with test case: case_imex19b  -- on/at 2017-09-22T14:24:22.605Z
+ DESCRIPTION: Permission and Prohibition in one Policy, Prohibition evaluated
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b11_b1'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b11_b1')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/archive', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/archive' (action of '_:b11_b1'), status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/archive', status = Not-Exercised
+ TESTRESULT-FINAL: Evaluation of the full Prohibition instance, status = Not-Violated
+ CLOSING test case: case_imex19b  -- on/at 2017-09-22T14:24:23.201Z

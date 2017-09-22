@@ -1,0 +1,8 @@
+ START with test case: case_imex18b  -- on/at 2017-09-22T14:24:22.601Z
+ DESCRIPTION: Permission with constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b9_b0'
+ TESTRESULT: Evaluation of Constraint instance '_:b9_b1' (a http://www.w3.org/ns/odrl/2/constraint), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Satisfied
+ TESTRESULT: Constraint(s) of the Rule is/are Not-Satisfied - no further processing
+ CLOSING test case: case_imex18b  -- on/at 2017-09-22T14:24:23.188Z
