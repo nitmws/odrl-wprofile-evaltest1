@@ -1,9 +1,0 @@
- START with test case: case_imex13a  -- on/at 2017-09-22T14:24:22.565Z
- DESCRIPTION: Permission with constraint
- MSG: JSON-LD read, parsed, transformed to RDF, files written 
- NEXT STEP: Start evaluation of Rule with id '_:b0_b0'
- TESTRESULT: Evaluation of Constraint instance '_:b0_b1' (a http://www.w3.org/ns/odrl/2/constraint), status = Satisfied (preset)
- TESTRESULT: Evaluation of all constraints of the Rule, status = Satisfied
- TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/distribute', status = Not-Existing
- TESTRESULT-FINAL: Evaluation of the full Permission instance, status = Allowed
- CLOSING test case: case_imex13a  -- on/at 2017-09-22T14:24:23.135Z
