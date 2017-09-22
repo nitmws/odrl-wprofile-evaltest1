@@ -1,0 +1,27 @@
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "@type": "Offer",
+  "uid": "http://example.com/policy:88",
+  "profile": "http://example.com/odrl:profile:09",
+  "permission": [{
+    "assigner": "http://example.com/assigner:sony",
+    "target": "http://example.com/music/1999.mp3",
+    "action": "play",
+    "duty": [{
+      "action": [{
+        "rdf:value": { "@id": "odrl:compensate" },
+        "refinement": [{
+          "leftOperand": "payAmount",
+          "operator": "eq",
+          "rightOperand": "5.00",
+          "unit": "http://dbpedia.org/resource/Euro"
+        }]
+      }],
+      "constraint": [{
+        "leftOperand": "event",
+        "operator": "lt",
+        "rightOperand": "policyUsage"
+      }]
+    }]
+  }]
+}

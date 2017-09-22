@@ -30,4 +30,5 @@ CASE99: = the only variable name which must be changed: it sets the name of the 
     instances: = This section defines preset values for Things in the evaluated Rule with a specific id - may be the id of a blank node!
       "_:b0_b0": "Not-Satisfied" = preset value of a blank node with the id _:b0_b0
                                  Be aware: the preset value must match the type of the node
+      "_:b9999": "Not-Satisfied" WARNING: at least ONE (dummy) entry is required, that's an issue coming from the used YAML component, sorry.
 ```

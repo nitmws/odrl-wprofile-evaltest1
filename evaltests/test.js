@@ -148,6 +148,7 @@ function doTheTest(caseName){
                     evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, evalContext)
                     break;
                 case odrlCoreVocab.obligation:
+                    evaluator.evaluateObligation(policyN3store, evalRuleid, tlog, evalContext)
                     break;
             }
         }

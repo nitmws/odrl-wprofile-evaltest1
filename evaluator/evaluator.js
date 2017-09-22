@@ -609,6 +609,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
                 // At this point the status of all consequences can be only Fulfilled or Not-Existing
                 if (consequenceFulfilled) {
                     testlogger.addLine("TESTRESULT: Evaluation of all consequence-Duty instances of '" + dutyId + "', status = " + evalDutyState[0])
+                    return evalDutyState[0]
                 }
                 else {
                     testlogger.addLine("TESTRESULT: Evaluation of all consequence-Duty instances of '" + dutyId + "', status = " +evalDutyState[2])
@@ -619,20 +620,6 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
         }
     }
 
- /*
-    if (evalContext) {
-        let testResultPreset = ""
-        if (evalContext.evalpresets.instances[dutyId]) {
-            testResultPreset = evalContext.evalpresets.instances[dutyId]
-        }
-        if (testResultPreset === "" && evalContext.evalpresets.defaults.duty) {
-            testResultPreset = evalContext.evalpresets.defaults.duty
-        }
-        testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = "
-            + testResultPreset + " (preset)")
-        return testResultPreset
-    }
-*/
     /*
         NOTE: a full implementation of an Evaluator should start processing the Duty now.
             As this is considered as black-box by the ODRL Recommendation this processing and
