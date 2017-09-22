@@ -811,14 +811,13 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
     let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.action, null, null)
     let actionId = ""
     if (actionQuads.length < 1){
-        testlogger.addLine("TESTRESULT-FINAL: validation ERROR: Prohibtion has no action")
+        testlogger.addLine("TESTRESULT-FINAL: validation ERROR: Prohibition has no action")
         return
     }
     else {
         actionId = actionQuads[0].object
     }
 
-    // testlogger.addLine("NEXT STEP: Evaluation of ActionExercised")
 
     let actionExercisedEvalResult =
         evaluateActionExercised(policyTriplestore, evalRuleid, odrlCoreVocab.prohibition, testlogger, evalContext)
@@ -869,3 +868,18 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
         evalProhibitionState[prohibitionStateIdx])
 }
 exports.evaluateProhibition = evaluateProhibition
+
+/**
+ * Evaluates an instance of the Rule Class referenced by the property obligation
+ * @param policyTriplestore
+ * @param evalRuleid
+ * @param testlogger
+ * @param evalContext
+ */
+function evaluateObligation(policyTriplestore, evalRuleid, testlogger, evalContext ){
+
+    let obligationEvalResult = evaluateDutyInstance(policyTriplestore, evalRuleid, true, odrlCoreVocab.obligation, testlogger, evalContext)
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Obligation instance, status = " +
+        obligationEvalResult)
+}
+exports.evaluateObligation = evaluateObligation

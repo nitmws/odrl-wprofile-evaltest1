@@ -28,8 +28,8 @@ The testwise evaluation of Rules can be controlled by a configuration file which
 
 The current state of this project is "under construction":
 * the evaluation of a Permission is complete, needs more testing
-* the evaluation of a Prohibition is almost complete
-* the evaluation of an Obligation does not exist yet
+* the evaluation of a Prohibition is complete, needs more testing
+* the evaluation of an Obligation is complete, needs more testing
 
 Timeline: all evaluations should be available in mid-October 2017.
 
