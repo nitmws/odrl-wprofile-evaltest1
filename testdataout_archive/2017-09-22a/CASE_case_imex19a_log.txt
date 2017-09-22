@@ -1,0 +1,8 @@
+ START with test case: case_imex19a  -- on/at 2017-09-22T14:24:22.603Z
+ DESCRIPTION: Permission and Prohibition in one Policy, Permission evaluated
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b10_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/display', status = Not-Existing
+ TESTRESULT-FINAL: Evaluation of the full Permission instance, status = Allowed
+ CLOSING test case: case_imex19a  -- on/at 2017-09-22T14:24:23.195Z

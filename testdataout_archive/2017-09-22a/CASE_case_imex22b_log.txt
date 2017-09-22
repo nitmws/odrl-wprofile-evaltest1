@@ -1,0 +1,15 @@
+ START with test case: case_imex22b  -- on/at 2017-09-22T14:24:22.609Z
+ DESCRIPTION: Permission with duty having action refinement and constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b13_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/play', status = Not-Existing
+ NEXT STEP: Evaluation of Duty instance '_:b13_b1', referenced by 'http://www.w3.org/ns/odrl/2/duty'
+ TESTRESULT: Evaluation of Constraint instance '_:b13_b4' (a http://www.w3.org/ns/odrl/2/constraint), status = Satisfied (preset)
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b13_b1')
+ TESTRESULT: Evaluation of Constraint instance '_:b13_b3' (a http://www.w3.org/ns/odrl/2/refinement), status = Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b13_b2', status = Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b13_b2' (action of '_:b13_b1'), status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b13_b1', status = Not-Fulfilled (action not exercised, no consequences exist)
+ TESTRESULT-FINAL: Evaluation of the full Permission instance, status = Not-Allowed
+ CLOSING test case: case_imex22b  -- on/at 2017-09-22T14:24:23.214Z
