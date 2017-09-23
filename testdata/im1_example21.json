@@ -1,19 +1,24 @@
 {
   "@context": "http://www.w3.org/ns/odrl.jsonld",
   "@type": "Agreement",
-  "uid": "http://example.com/policy:5555",
-  "profile": "http://example.com/odrl:profile:08",
-  "conflict": "perm",
-  "permission": [{
-    "target": "http://example.com/photoAlbum:55",
-    "action": "display",
-    "assigner": "http://example.com/MyPix:55",
-    "assignee": "http://example.com/assignee:55"
-  }],
-  "prohibition": [{
-    "target": "http://example.com/photoAlbum:55",
-    "action": "archive",
-    "assigner": "http://example.com/MyPix:55",
-    "assignee": "http://example.com/assignee:55"
+  "uid": "http://example.com/policy:42B",
+  "profile": "http://example.com/odrl:profile:09",
+  "assigner": "http://example.com/org:43",
+  "assignee": "http://example.com/person:44",
+  "obligation": [{
+    "action": "delete",
+    "target": "http://example.com/document:XZY",
+    "consequence": [{
+      "action": [{
+        "rdf:value": { "@id": "odrl:compensate" },
+        "refinement": [{
+          "leftOperand": "payAmount",
+          "operator": "eq",
+          "rightOperand": "10.00",
+          "unit": "http://dbpedia.org/resource/Euro"
+        }]
+      }],
+      "compensatedParty": "http://wwf.org"
+    }]
   }]
 }

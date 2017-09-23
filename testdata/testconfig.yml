@@ -215,6 +215,96 @@ case_imex20a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
+case_imex20b:
+  filename: "im1_example20"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex21a:
+  filename: "im1_example21"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex21b:
+  filename: "im1_example21"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Not-Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex21c:
+  filename: "im1_example21"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Not-Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex21d:
+  filename: "im1_example21"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex21e:
+  filename: "im1_example21"
+  description: "Obligation with refined action"
+  evalRuleproperty: "obligation.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
 case_imex22a:
   filename: "im1_example22"
   description: "Permission with duty having action refinement and constraint"
