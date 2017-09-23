@@ -1,0 +1,17 @@
+ START with test case: case_imex24b  -- on/at 2017-09-23T19:55:28.158Z
+ DESCRIPTION: Prohibition with remedy
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b29_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b29_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/index', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/index' (action of '_:b29_b0'), status = Exercised (preset)
+ NEXT STEP: Action of Prohibition exercised: evaluation of remedies
+ NEXT STEP: Evaluation of Duty instance '_:b29_b1', referenced by 'http://www.w3.org/ns/odrl/2/remedy'
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b29_b1')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/anonymize', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/anonymize' (action of '_:b29_b1'), status = Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b29_b1', status = Fulfilled (action exercised)
+ TESTRESULT: Evaluation of all remedy(ies), status = Fulfilled
+ TESTRESULT-FINAL: Evaluation of the full Prohibition instance, status = Not-Violated
+ CLOSING test case: case_imex24b  -- on/at 2017-09-23T19:55:28.768Z

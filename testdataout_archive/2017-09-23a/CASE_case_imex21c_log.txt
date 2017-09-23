@@ -1,0 +1,17 @@
+ START with test case: case_imex21c  -- on/at 2017-09-23T19:55:28.143Z
+ DESCRIPTION: Obligation with refined action
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b16_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ NEXT STEP: Evaluation of Duty instance '_:b16_b0', referenced by 'http://www.w3.org/ns/odrl/2/obligation'
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b16_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/delete', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/delete' (action of '_:b16_b0'), status = Not-Exercised (preset)
+ NEXT STEP: Evaluation of Duty instance '_:b16_b1', referenced by 'http://www.w3.org/ns/odrl/2/consequence'
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b16_b1')
+ TESTRESULT: Evaluation of Constraint instance '_:b16_b3' (a http://www.w3.org/ns/odrl/2/refinement), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b16_b2', status = Not-Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b16_b2' - refinments, status = Not-Existing (action not existing by Not-Satisfied refinement)
+ TESTRESULT: Evaluation of Duty instance '_:b16_b1', status = ERROR (action not existing)
+ TESTRESULT-FINAL: Evaluation of the full Obligation instance, status = ERROR
+ CLOSING test case: case_imex21c  -- on/at 2017-09-23T19:55:28.690Z
