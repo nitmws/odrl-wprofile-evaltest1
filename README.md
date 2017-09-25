@@ -40,14 +40,14 @@ Overview of files and folders of this project:
 * /model: JS files providing identifiers of Things defined by the ODRL Information Model or an ODRL Profile
 * /services: JS files supporting the project
 * /testdata: JSON-LD files with ODRL Policy data, the test configuration file (YAML)
-* /testdataout: the files created by the ODRL Evaluator
+* /testdataout: the files created by the ODRL Evaluator (is ignored by git)
 * /testdataout_archive: subfolders holding data of the /testdataout folder of a specific test sequence
 
 ### Errors, Issues, Feedback
 
 To share errors, issues or any other feedback please use the [Issues feature of the Github repository](https://github.com/nitmws/odrl-wprofile-evaltest1/issues).
 
-### State, Timeline and more
+### State, Timeline, Rights
 
 The current state of this project is "close to final":
 * the evaluation of a Permission is complete, needs more testing
