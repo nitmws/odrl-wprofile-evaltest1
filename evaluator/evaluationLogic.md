@@ -2,16 +2,27 @@
 
 (This document is currently Under Construction)
 
-Basics:
-* the evaluation of Rules, Logical/Constraints, Action exercised, Duty return one of these states, all terms used as name of a state are starting with an uppercase character and are used in the logic below:
-  * affirmative reply (term depends on evaluated subject)
-  * negative reply (term depends on evaluated subject)
-  * Not-Existing 
-  * Error
-* Term **preset**: this evaluator has a system to set values as a preset of an evaluation. The file /testdata/testconfig.yml holds these data. An evaluator may check this file and retrieve preset values, if available.
-* `-->` indicates: a sub-evaluation is called
-* `-->` indicates: an evaluation result is returned
-* ERROR state: is implicitly bubbled up, getting this state returned is not included in this logic
+### Basics:
+* the evaluation of Rules, Logical/Constraints, Action exercised or Duties return a state. All terms used as name of a state are starting with an uppercase character and are used in the logic below:
+  * affirmative state (term depends on evaluated subject, see below)
+  * negative state (term depends on evaluated subject, see below)
+  * Not-Existing state
+  * Error state
+* Term **preset** used below: this evaluator has a system to set values from a preset. The file /testdata/testconfig.yml holds these data and they are transformed into a context object. This evaluator checks this object and retrieve preset values, if available.
+* `>>>` indicates: a sub-evaluation is called
+* `-->` indicates: the processing of this evaluation is stopped at that point and a state is returned
+* `continue` indicates the processing is continued
+* ERROR state: is bubbled up, further evaluation of this state is not included in this project
+
+### Generic design
+
+All evaluation functions of this project follow this generic design:
+* if the evaluation of a sub-component returns an affirmative state the processing is continued
+* if the evaluation of a sub-component returns a negative or an error state the processing of the function is stopped and this state is returned.
+* at the end of a function an affirmative state is returned.
+* how the Not-Existing state of an evaluated sub-component is treated depends on the function.
+
+# The Main Rules
 
 ## Permission
 ```
@@ -52,9 +63,9 @@ duties: all Fulfilled?
 >>> Single Duty instance (evaluate consequences) --> Obligation state = evaluated state
 ```
 
-## Sub-evaluations
+# Sub-evaluations
 
-This document names an evaluation called by an evaluation a sub-evaluation.
+Note: This document names an evaluation called by an evaluation a _sub-evaluation_.
 
 ### All constraint Constraints
 ```
@@ -62,10 +73,9 @@ Do constraint Constraints exist?
   YES: continue
   NO: --> Not-Existing
 Iterate over all constraints
-  Constraint satisfied?
-    >>> Single Constraint:
-      Satisfied: continue
-      Not-Satisfied: --> Not-Satisfied
+  >>> Single Constraint:
+    Satisfied: continue
+    Not-Satisfied: --> Not-Satisfied
 --> Satisfied
 ```
 
@@ -75,23 +85,22 @@ Do refinement Constraints exist?
   YES: continue
   NO: --> Not-Existing
 Iterate over all constraints
-  Constraint satisfied?
-    >>> Single Constraint:
-      Satisfied: continue
-      Not-Satisfied: --> Not-Satisfied
+  >>> Single Constraint:
+    Satisfied: continue
+    Not-Satisfied: --> Not-Satisfied
 --> Satisfied
 ```
 
 ### Single Constraint instance
 ```
-Is the class of the referenced constraint a Constraint or a Logical Constraint
+Is the class of the referenced constraint a Constraint or a Logical Constraint?
   Constraint:
     Does a preset exist?
       YES: --> preset state
       NO: continue
-    Is a function for evaluation available?
+    Is a function for evaluation available? (Note: this project does not provide constraint evaluation functions! - but it outlines where to add code for this purpose.)
       YES: execute it and --> evaluated state
-      NO: --> ERROR
+      NO: --> ERROR)
   Logical Constraint:
     Parse for the operand
     Iterate over all referenced constraints (Note: a recursive call of this evaluation function)
@@ -100,6 +109,7 @@ Is the class of the referenced constraint a Constraint or a Logical Constraint
 ```
 
 ### All duty Duties
+Note: covers instances of Duty referenced by the duty property
 ```
 Iterate over all duties
   >>> Single Duty instance (evaluate consequences)
@@ -110,6 +120,7 @@ Iterate over all duties
 ```
 
 ### All remedy or consequence Duties
+Note: covers instances of Duty referenced by the remedy or consequence property
 ```
 Iterate over all remedies or consequences
   >>> Single Duty instance (do not evaluate consequences)
@@ -120,6 +131,7 @@ Iterate over all remedies or consequences
 ```
 
 ### Single Duty instance (evaluate consequences)
+Note: this function includes the evaluation of consequence properties
 ```
 >>> All constraint Constraints:
   Satisfied: continue
@@ -134,6 +146,7 @@ Iterate over all remedies or consequences
 ```
 
 ### Single Duty instance (do not evaluate consequences)
+Note: this function does not include the evaluation of consequence properties
 ```
 >>> All constraint Constraints:
   Satisfied: continue
@@ -146,14 +159,14 @@ Iterate over all remedies or consequences
 
 ### Action Exercised
 ```
->>> All refinement Constraints:
+>>> All refinement Constraints (of the action):
   Satisfied: continue
   Not-Satisfied: --> Not-Existing (Note: this may cause a validation error as the action property is mandatory in some classes.)
 Was action exercised:
   Does a preset exist?
     YES: --> preset state
     NO: continue
-  Is a function for evaluation available?
+  Is a function for evaluation available? (Note: this project does not provide has-action-been-exercised evaluation functions! - but it outlines where to add code for this purpose.)
     YES: execute it and --> evaluated state
     NO: --> ERROR
 ```
