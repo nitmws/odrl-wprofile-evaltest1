@@ -1093,7 +1093,7 @@ function evaluateProhibitionAction(policyTriplestore, evalRuleid, testlogger, ev
     }
 
     let actionExercisedEvalResult =
-        evaluateActionExercised(policyTriplestore, evalRuleid, odrlCoreVocab.prohibition, testlogger, evalContext)
+        evaluateActionExercised(policyTriplestore, actionId, odrlCoreVocab.prohibition, testlogger, evalContext)
 
     testlogger.addLine("TESTRESULT-FINAL: Evaluation of the action of a Prohibition instance, status = " +
         actionExercisedEvalResult)

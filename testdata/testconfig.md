@@ -18,11 +18,13 @@ CASE99: = the only variable name which must be changed: it sets the name of the 
   evalRuleid: "..." = the uid of the Rule of a Policy which should be evaluated
   evalRuleproperty: "prohibition.1" = the property name, a dot and the sequence number of the Rule of a Policy which should be evaluated
                     Note: either evalRuleid or  evalRuleproperty MUST be used
+  obligationEvalRound: = can be used ONLY with an Obligation rule! Sets the evaluation round 1 or 2 - see the evaluationLogic document in the /evaluator folder.
   evalpresets: = this section defines preset values
     defaults: = this section defines preset values for any instance of the used property names if no preset is defined in the instances section below
       constraint: "Satisfied" = preset value of any constraint Constraint
       refinement: "Satisfied" = preset value of any refinement Constraint
       dutyAction: "Exercised" =  preset value of the action in any duty
+      dutyEvalRound: = sets the evaluation round of the Duty to 1 or 2 - - see the evaluationLogic document in the /evaluator folder.
       obligationAction: "Exercised" = preset value of the action of any obligation
       consequenceAction: "Not-Exercised"  = preset value of the action of any consequence
       remedyAction: "Exercised"  = preset value of the action of any remedy

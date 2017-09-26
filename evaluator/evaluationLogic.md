@@ -59,7 +59,17 @@ duties: all Fulfilled?
 ```
 
 ## Obligation
+The evaluation of Duty instances with (optional)consequences - including Obligation - is split into two rounds:
+1. Evaluate the Duty without considering consequences
+2. If the first round returned state Not-Fulfilled evaluate the Duty again including consequences. Further the action of this Duty MUST be Exercised.
+
+Taking the step from round 1 to round 2 is controlled outside the Evaluator!
+
 ```
+Round 1:
+>>> Single Duty instance (do NOT evaluate consequences) --> Obligation state = evaluated state
+
+Round 2:
 >>> Single Duty instance (evaluate consequences) --> Obligation state = evaluated state
 ```
 
