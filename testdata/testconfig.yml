@@ -16,7 +16,22 @@ CASE_TEMPLATE:
     instances:
       "_:b9999": "Not-Satisfied"
 comment12421: "Below test cases for the ODRL Evaluator test ************************************************ "
-case_imex13a:
+case_imex12-1:
+  filename: "im1_example12"
+  description: "Permission with constraint"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex13-1:
   filename: "im1_example13"
   description: "Permission with constraint"
   evalRuleproperty: "permission.1"
@@ -31,7 +46,7 @@ case_imex13a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex13b:
+case_imex13-2:
   filename: "im1_example13"
   description: "Permission with constraint"
   evalRuleproperty: "permission.1"
@@ -46,7 +61,7 @@ case_imex13b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex14a:
+case_imex14-1:
   filename: "im1_example14"
   description: "Permission with action refinement"
   evalRuleproperty: "permission.1"
@@ -61,7 +76,7 @@ case_imex14a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex14b:
+case_imex14-2:
   filename: "im1_example14"
   description: "Permission with action refinement"
   evalRuleproperty: "permission.1"
@@ -76,7 +91,7 @@ case_imex14b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex15a:
+case_imex15-1:
   filename: "im1_example15"
   description: "Permission with Logical Constraint"
   evalRuleproperty: "permission.1"
@@ -92,7 +107,7 @@ case_imex15a:
     instances:
       "http://example.com/p:88/C1": "Satisfied"
       "http://example.com/p:88/C2": "Satisfied"
-case_imex15b:
+case_imex15-2:
   filename: "im1_example15"
   description: "Permission with Logical Constraint"
   evalRuleproperty: "permission.1"
@@ -108,7 +123,7 @@ case_imex15b:
     instances:
       "http://example.com/p:88/C1": "Satisfied"
       "http://example.com/p:88/C2": "Not-Satisfied"
-case_imex15c:
+case_imex15-3:
   filename: "im1_example15"
   description: "Permission with Logical Constraint"
   evalRuleproperty: "permission.1"
@@ -124,7 +139,7 @@ case_imex15c:
     instances:
       "http://example.com/p:88/C1": "Not-Satisfied"
       "http://example.com/p:88/C2": "Satisfied"
-case_imex15d:
+case_imex15-4:
   filename: "im1_example15"
   description: "Permission with Logical Constraint"
   evalRuleproperty: "permission.1"
@@ -140,7 +155,67 @@ case_imex15d:
     instances:
       "http://example.com/p:88/C1": "Not-Satisfied"
       "http://example.com/p:88/C2": "Not-Satisfied"
-case_imex18a:
+case_imex16-1:
+  filename: "im1_example16"
+  description: "Permission with target refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex16-2:
+  filename: "im1_example16"
+  description: "Permission with target refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex17-1:
+  filename: "im1_example17"
+  description: "Permission with assignee refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex17-2:
+  filename: "im1_example17"
+  description: "Permission with assignee refinement"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Not-Satisfied"
+      dutyAction: "Exercised"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex18-1:
   filename: "im1_example18"
   description: "Permission with constraint"
   evalRuleproperty: "permission.1"
@@ -155,7 +230,7 @@ case_imex18a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex18b:
+case_imex18-2:
   filename: "im1_example18"
   description: "Permission with constraint"
   evalRuleproperty: "permission.1"
@@ -170,7 +245,7 @@ case_imex18b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex19a:
+case_imex19-1:
   filename: "im1_example19"
   description: "Permission and Prohibition in one Policy, Permission evaluated"
   evalRuleproperty: "permission.1"
@@ -185,7 +260,7 @@ case_imex19a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex19b:
+case_imex19-2:
   filename: "im1_example19"
   description: "Permission and Prohibition in one Policy, Prohibition evaluated"
   evalRuleproperty: "prohibition.1"
@@ -200,10 +275,11 @@ case_imex19b:
       action: "Not-Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex20a:
+case_imex20-1:
   filename: "im1_example20"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -215,10 +291,11 @@ case_imex20a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex20b:
+case_imex20-2:
   filename: "im1_example20"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -230,14 +307,15 @@ case_imex20b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex21a:
+case_imex21-1:
   filename: "im1_example21"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "1"
   evalpresets:
     defaults:
       constraint: "Satisfied"
-      refinement: "Not-Satisfied"
+      refinement: "Satisfied"
       dutyAction: "Exercised"
       obligationAction: "Exercised"
       consequenceAction: "Exercised"
@@ -245,10 +323,11 @@ case_imex21a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex21b:
+case_imex21-2:
   filename: "im1_example21"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "2"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -260,10 +339,11 @@ case_imex21b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex21c:
+case_imex21-3:
   filename: "im1_example21"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "2"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -275,10 +355,11 @@ case_imex21c:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex21d:
+case_imex21-4:
   filename: "im1_example21"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "2"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -290,10 +371,11 @@ case_imex21d:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex21e:
+case_imex21-5:
   filename: "im1_example21"
   description: "Obligation with refined action"
   evalRuleproperty: "obligation.1"
+  obligationEvalRound: "2"
   evalpresets:
     defaults:
       constraint: "Satisfied"
@@ -305,7 +387,7 @@ case_imex21e:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex22a:
+case_imex22-1:
   filename: "im1_example22"
   description: "Permission with duty having action refinement and constraint"
   evalRuleproperty: "permission.1"
@@ -320,7 +402,7 @@ case_imex22a:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex22b:
+case_imex22-2:
   filename: "im1_example22"
   description: "Permission with duty having action refinement and constraint"
   evalRuleproperty: "permission.1"
@@ -335,7 +417,7 @@ case_imex22b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex22c:
+case_imex22-3:
   filename: "im1_example22"
   description: "Permission with duty having action refinement and constraint"
   evalRuleproperty: "permission.1"
@@ -350,7 +432,7 @@ case_imex22c:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex22d:
+case_imex22-4:
   filename: "im1_example22"
   description: "Permission with duty having action refinement and constraint"
   evalRuleproperty: "permission.1"
@@ -365,7 +447,7 @@ case_imex22d:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex23a:
+case_imex23-1:
   filename: "im1_example23"
   description: "Permission with duty having a consequence"
   evalRuleproperty: "permission.1"
@@ -374,13 +456,14 @@ case_imex23a:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Exercised"
+      dutyEvalRound: "1"
       obligationAction: "Exercised"
       consequenceAction: "Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex23b:
+case_imex23-2a:
   filename: "im1_example23"
   description: "Permission with duty having a consequence"
   evalRuleproperty: "permission.1"
@@ -389,13 +472,30 @@ case_imex23b:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Not-Exercised"
+      dutyEvalRound: "1"
       obligationAction: "Exercised"
       consequenceAction: "Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex23c:
+case_imex23-2b:
+  filename: "im1_example23"
+  description: "Permission with duty having a consequence"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      dutyEvalRound: "2"
+      obligationAction: "Exercised"
+      consequenceAction: "Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex23-3a:
   filename: "im1_example23"
   description: "Permission with duty having a consequence"
   evalRuleproperty: "permission.1"
@@ -404,13 +504,14 @@ case_imex23c:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Not-Exercised"
+      dutyEvalRound: "1"
       obligationAction: "Exercised"
       consequenceAction: "Not-Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex23d:
+case_imex23-3b:
   filename: "im1_example23"
   description: "Permission with duty having a consequence"
   evalRuleproperty: "permission.1"
@@ -419,13 +520,30 @@ case_imex23d:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Exercised"
+      dutyEvalRound: "2"
+      obligationAction: "Exercised"
+      consequenceAction: "Not-Exercised"
+      remedyAction: "Exercised"
+      action: "Exercised"
+    instances:
+      "_:b9999": "Not-Satisfied"
+case_imex23-4:
+  filename: "im1_example23"
+  description: "Permission with duty having a consequence"
+  evalRuleproperty: "permission.1"
+  evalpresets:
+    defaults:
+      constraint: "Satisfied"
+      refinement: "Satisfied"
+      dutyAction: "Exercised"
+      dutyEvalRound: "2"
       obligationAction: "Exercised"
       consequenceAction: "Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex23e:
+case_imex23-5:
   filename: "im1_example23"
   description: "Permission with duty having a consequence"
   evalRuleproperty: "permission.1"
@@ -434,13 +552,14 @@ case_imex23e:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Exercised"
+      dutyEvalRound: "2"
       obligationAction: "Exercised"
       consequenceAction: "Not-Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex24a:
+case_imex24-1:
   filename: "im1_example24"
   description: "Prohibition with remedy"
   evalRuleproperty: "prohibition.1"
@@ -455,7 +574,7 @@ case_imex24a:
       action: "Not-Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex24b:
+case_imex24-2:
   filename: "im1_example24"
   description: "Prohibition with remedy"
   evalRuleproperty: "prohibition.1"
@@ -470,7 +589,7 @@ case_imex24b:
       action: "Exercised"
     instances:
       "_:b9999": "Not-Satisfied"
-case_imex24c:
+case_imex24-3:
   filename: "im1_example24"
   description: "Prohibition with remedy"
   evalRuleproperty: "prohibition.1"

@@ -122,7 +122,8 @@ function doTheTest(caseName){
         // at this point the id of the rule which should be evaluated is set
         tlog.addLine("NEXT STEP: Start evaluation of Rule with id '" + evalRuleid + "'")
 
-        // Evaluate the Constraints
+/*
+        // Evaluate the Constraints: outsourced to the evaluation of Permission, Prohibition and Obligation
         let constraintsEvalResult =
             evaluator.evaluateAllConstraints(policyN3store, evalRuleid, tlog, evalContext)
         tlog.addLine("TESTRESULT: Evaluation of all constraints of the Rule, status = " + constraintsEvalResult)
@@ -147,10 +148,48 @@ function doTheTest(caseName){
                     evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, evalContext)
                     break;
                 case odrlCoreVocab.obligation:
-                    evaluator.evaluateObligation(policyN3store, evalRuleid, tlog, evalContext)
+                    let obligationEvalRound = evalContext.obligationEvalRound
+                    switch (obligationEvalRound){
+                        case "1":
+                            evaluator.evaluateObligationRound1(policyN3store, evalRuleid, tlog, evalContext)
+                            break
+                        case "2":
+                            evaluator.evaluateObligationRound2(policyN3store, evalRuleid, tlog, evalContext)
+                            break
+                    }
                     break;
             }
         }
+     */
+
+        if (evalRulePropertyname === "") {
+            // get the subclass of the Rule
+            let ruleQuads = policyN3store.getTriplesByIRI(null, null, evalRuleid, null)
+            if (ruleQuads) {
+                evalRulePropertyname = ruleQuads[0].predicate
+            }
+            tlog.addLine("TESTRESULT: inferred property referring the to-be-tested Rule = " + evalRulePropertyname)
+        }
+        switch (evalRulePropertyname) {
+            case odrlCoreVocab.permission:
+                evaluator.evaluatePermission(policyN3store, evalRuleid, tlog, evalContext)
+                break
+            case odrlCoreVocab.prohibition:
+                evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, evalContext)
+                break;
+            case odrlCoreVocab.obligation:
+                let obligationEvalRound = evalContext.obligationEvalRound
+                switch (obligationEvalRound){
+                    case "1":
+                        evaluator.evaluateObligationRound1(policyN3store, evalRuleid, tlog, evalContext)
+                        break
+                    case "2":
+                        evaluator.evaluateObligationRound2(policyN3store, evalRuleid, tlog, evalContext)
+                        break
+                }
+                break;
+        }
+
         // finally: write test log
         tlog.addLine("CLOSING test case: " + caseName + "  -- on/at " + utils.getDateTimeNowISO())
         tlog.writeLog("CASE_" + caseName + "_log.txt")

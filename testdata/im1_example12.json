@@ -1,0 +1,11 @@
+{
+    "@context": "http://www.w3.org/ns/odrl.jsonld",
+    "@type": "Offer",
+    "uid": "http://example.com/policy:1012",
+    "profile": "http://example.com/odrl:profile:06",
+    "permission": [{
+            "target": "http://example.com/music:1012",
+            "assigner": "http://example.com/org:abc",
+            "action": "play"
+     }]
+}
