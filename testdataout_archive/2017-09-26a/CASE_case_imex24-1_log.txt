@@ -1,0 +1,13 @@
+ START with test case: case_imex24-1  -- on/at 2017-09-26T08:49:04.204Z
+ DESCRIPTION: Prohibition with remedy
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b35_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/data:77', status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/org:99', status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b35_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/index', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/index' (action of '_:b35_b0'), status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/index', status = Not-Exercised
+ TESTRESULT-FINAL: Evaluation of the full Prohibition instance, status = Not-Infringed
+ CLOSING test case: case_imex24-1  -- on/at 2017-09-26T08:49:04.885Z

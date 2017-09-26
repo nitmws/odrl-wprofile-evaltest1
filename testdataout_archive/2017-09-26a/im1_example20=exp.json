@@ -1,0 +1,60 @@
+[
+  {
+    "@type": [
+      "http://www.w3.org/ns/odrl/2/Agreement"
+    ],
+    "http://www.w3.org/ns/odrl/2/obligation": [
+      {
+        "http://www.w3.org/ns/odrl/2/action": [
+          {
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#value": [
+              {
+                "@id": "http://www.w3.org/ns/odrl/2/compensate"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/refinement": [
+              {
+                "http://www.w3.org/ns/odrl/2/leftOperand": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/payAmount"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/operator": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/eq"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/rightOperand": [
+                  {
+                    "@value": "500.00"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/unit": [
+                  {
+                    "@value": "http://dbpedia.org/resource/Euro"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assignee": [
+          {
+            "@id": "http://example.com/person:44"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assigner": [
+          {
+            "@id": "http://example.com/org:43"
+          }
+        ]
+      }
+    ],
+    "http://www.w3.org/ns/odrl/2/profile": [
+      {
+        "@id": "http://example.com/odrl:profile:09"
+      }
+    ],
+    "@id": "http://example.com/policy:42"
+  }
+]

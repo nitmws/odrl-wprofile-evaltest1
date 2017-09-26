@@ -1,0 +1,65 @@
+[
+  {
+    "@type": [
+      "http://www.w3.org/ns/odrl/2/Agreement"
+    ],
+    "http://www.w3.org/ns/odrl/2/permission": [
+      {
+        "http://www.w3.org/ns/odrl/2/action": [
+          {
+            "@id": "http://www.w3.org/ns/odrl/2/distribute"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assignee": [
+          {
+            "@id": "http://example.com/person:88"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assigner": [
+          {
+            "@id": "http://example.com/org:99"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/duty": [
+          {
+            "http://www.w3.org/ns/odrl/2/action": [
+              {
+                "@id": "http://www.w3.org/ns/odrl/2/attribute"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/attributedParty": [
+              {
+                "@id": "http://australia.gov.au/"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/consequence": [
+              {
+                "http://www.w3.org/ns/odrl/2/action": [
+                  {
+                    "@id": "http://www.w3.org/ns/odrl/2/acceptTracking"
+                  }
+                ],
+                "http://www.w3.org/ns/odrl/2/trackingParty": [
+                  {
+                    "@id": "http://example.com/dept:100"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/target": [
+          {
+            "@id": "http://example.com/data:77"
+          }
+        ]
+      }
+    ],
+    "http://www.w3.org/ns/odrl/2/profile": [
+      {
+        "@id": "http://example.com/odrl:profile:09"
+      }
+    ],
+    "@id": "http://example.com/policy:66"
+  }
+]

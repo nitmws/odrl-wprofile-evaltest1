@@ -1,0 +1,14 @@
+ START with test case: case_imex20-2  -- on/at 2017-09-26T08:49:04.182Z
+ DESCRIPTION: Obligation with refined action
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b18_b0'
+ NEXT STEP: Evaluation of Duty instance '_:b18_b0', referenced by 'http://www.w3.org/ns/odrl/2/obligation'
+ TESTRESULT: validation notice: Duty has no target
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/person:44', status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action (of '_:b18_b0')
+ TESTRESULT: Evaluation of Constraint instance '_:b18_b2' (a http://www.w3.org/ns/odrl/2/refinement), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b18_b1', status = Not-Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b18_b1' - refinements, status = Not-Existing (action not existing by Not-Satisfied refinement)
+ TESTRESULT: Evaluation of Duty instance '_:b18_b0', status = ERROR (action not existing)
+ TESTRESULT-FINAL: Evaluation round 1 of the full Obligation instance, status = ERROR
+ CLOSING test case: case_imex20-2  -- on/at 2017-09-26T08:49:04.706Z
