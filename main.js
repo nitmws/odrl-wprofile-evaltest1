@@ -1,10 +1,8 @@
 "use strict"
-/*
-    Testing an Evaluator for ODRL Rules (with a Profile)
+/* **************************************************************
+    Tool for testing an Evaluator of ODRL Rules (with a Profile)
+*****************************************************************/
 
- */
-
-// evaluator test files reside in the /evaltest folder
 let Test1 = require("./evaltests/test")
 
 

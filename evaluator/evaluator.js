@@ -1,10 +1,13 @@
 "use strict"
+/**
+ * Evaluator module
+ */
 
 let odrlCoreVocab = require("../model/odrlCoreVocabulary")
 
 /**
  * The states resulting from the evaluation of an ODRL Rule etc use strings
- * The sequence in the array is: 0 = positive state, 1 = not-positive state,
+ * The index in the array is: 0 = positive/affirmative state, 1 = negative state,
  *  2 = semantically not existing, 3 = error state
  */
 const evalConstraintState  = ["Satisfied", "Not-Satisfied", "Not-Existing", "ERROR"]
@@ -33,6 +36,7 @@ exports.evalActionExersState = evalActionExersState
  */
 function evaluateAllConstraints(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -51,6 +55,7 @@ exports.evaluateAllConstraints = evaluateAllConstraints
  */
 function evaluateAllRefinements(policyTriplestore, subjectId, testlogger, evalContext) {
     if (!policyTriplestore) {
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -73,6 +78,7 @@ exports.evaluateAllRefinements = evaluateAllRefinements
  */
 function evaluateConstraintClassInstances(policyTriplestore, subjectId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -167,6 +173,7 @@ exports.preevaluateConstraintClassInstance = preevaluateConstraintClassInstance
  */
 function evaluateConstraintClassInstance(policyTriplestore, constraintId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -223,6 +230,8 @@ function evaluateConstraintClassInstance(policyTriplestore, constraintId, proper
         As this is considered as black-box by the ODRL Recommendation this processing and
         its result is replaced by the presets above.
 */
+   testlogger.addLine("ERROR: evaluateConstraintClassInstance -- no presets found")
+
     return evalConstraintState[3] // actually the function shouldn't get there because of the presets above
 }
 exports.evaluateConstraintClassInstance = evaluateConstraintClassInstance
@@ -238,6 +247,7 @@ exports.evaluateConstraintClassInstance = evaluateConstraintClassInstance
  */
 function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -279,6 +289,7 @@ function evaluateLogicalConstraintOr(policyTriplestore, constraintId, propertyId
  */
 function evaluateLogicalConstraintXone(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -320,6 +331,7 @@ function evaluateLogicalConstraintXone(policyTriplestore, constraintId, property
  */
 function evaluateLogicalConstraintAnd(policyTriplestore, constraintId, propertyId, testlogger, evalContext) {
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalConstraintState[3]
     }
 
@@ -406,6 +418,7 @@ function evaluateLogicalConstraintAndSequence(policyTriplestore, constraintId, p
  */
 function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
+        testlogger.addLine("ERROR: triple store is missing")
         return evalDutyState[3]
     }
     let evalConsequences = true
@@ -438,6 +451,7 @@ function evaluateAll_dutyDuties(policyTriplestore, ruleId, testlogger, evalConte
                 break;
             case evalDutyState[3]:
                 // duty returns an ERROR --> do the same
+                testlogger.addLine("ERROR: evaluateAll_dutyDuties -- a duty returned an error")
                 return evalDutyState[3]
                 break;
             default:
@@ -459,6 +473,7 @@ exports.evaluateAll_dutyDuties = evaluateAll_dutyDuties
  */
 function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, evalContext) {
     if (!policyTriplestore) {
+        testlogger.addLine("ERROR: triple store is missing")
         return evalDutyState[3]
     }
     let remedyQuads = policyTriplestore.getTriplesByIRI(ruleId, odrlCoreVocab.remedy, null, null)
@@ -482,6 +497,7 @@ function evaluateAll_remedyDuties(policyTriplestore, ruleId, testlogger, evalCon
                 break;
             case evalDutyState[3]:
                 // remedy returns an ERROR --> do the same
+                testlogger.addLine("ERROR: evaluateAll_remedyDuties -- a remedy returned an error")
                 return evalDutyState[3]
                 break;
             default:
@@ -505,6 +521,7 @@ exports.evaluateAll_remedyDuties = evaluateAll_remedyDuties
  */
 function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalDutyState[3]
     }
 
@@ -526,6 +543,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
             break;
         case evalConstraintState[3]:
             // constraints returned an ERROR --> do the same
+            testlogger.addLine("ERROR: evaluateDutyInstance -- constraints returned an error")
             testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[3])
             return evalDutyState[3]
             break;
@@ -535,7 +553,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
     let targetQuads = policyTriplestore.getTriplesByIRI(dutyId, odrlCoreVocab.target, null, null)
     let targetId = ""
     if (targetQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Duty has no target")
+        testlogger.addLine("NOTICE: Duty has no target")
     }
     else {
         targetId = targetQuads[0].object
@@ -558,6 +576,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
                 break;
             case evalConstraintState[3]:
                 // refinements returned an ERROR --> do the same
+                testlogger.addLine("ERROR: evaluateDutyInstance -- target refinements returned an error")
                 return
                 break;
         }
@@ -567,7 +586,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
     let assigneeQuads = policyTriplestore.getTriplesByIRI(dutyId, odrlCoreVocab.assignee, null, null)
     let assigneeId = ""
     if (assigneeQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Duty has no assignee")
+        testlogger.addLine("NOTICE: Duty has no assignee")
     }
     else {
         assigneeId = assigneeQuads[0].object
@@ -590,6 +609,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
                 break;
             case evalConstraintState[3]:
                 // refinements returned an ERROR --> do the same
+                testlogger.addLine("ERROR: evaluateDutyInstance -- assignee refinements returned an error")
                 return
                 break;
         }
@@ -620,6 +640,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
             break;
         case evalActionExersState[3]:
             // constraints returned an ERROR --> do the same
+            testlogger.addLine("ERROR: evaluateDutyInstance -- action refinements returned an error")
             return evalDutyState[3]
             break;
     }
@@ -660,6 +681,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
                             break;
                         case evalDutyState[3]:
                             // consequence returns an ERROR --> do the same
+                            testlogger.addLine("ERROR: evaluateDutyInstance -- consequences returned an error")
                             return evalDutyState[3]
                             break;
                     }
@@ -684,6 +706,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
             its result is replaced by the presets above.
 
     */
+    testlogger.addLine("ERROR: evaluateDutyInstance -- no preset found")
     return evalDutyState[3] // actually the function shouldn't get there because of the presets above
 }
 exports.evaluateDutyInstance = evaluateDutyInstance
@@ -705,12 +728,14 @@ exports.evaluateDutyInstance = evaluateDutyInstance
  */
 function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testlogger, evalContext){
     if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
         return evalActionExersState[3]
     }
     // retrieve the actionId from the class of the subjectId
     let actionQuads = policyTriplestore.getTriplesByIRI(subjectId, odrlCoreVocab.action, null, null)
     let actionId = ""
     if (actionQuads.length < 1){
+        testlogger.addLine("ERROR: evaluateActionExercised -- no action triple exists")
         return evalActionExersState[3] // = not existing
     }
     else {
@@ -737,6 +762,7 @@ function evaluateActionExercised(policyTriplestore, subjectId, propertyId, testl
             break;
         case evalConstraintState[3]:
             // refinements returned an ERROR --> do the same
+            testlogger.addLine("ERROR: evaluateActionExercised -- refinements returned an error")
             return evalActionExersState[3]
             break;
     }
@@ -787,6 +813,10 @@ exports.evaluateActionExercised = evaluateActionExercised
  * @param evalContext
  */
 function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
     // Evaluate the Constraints
     let constraintsEvalResult =
         evaluateAllConstraints(policyTriplestore, evalRuleid, testlogger, evalContext)
@@ -808,7 +838,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
     let targetQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.target, null, null)
     let targetId = ""
     if (targetQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Permission has no target")
+        testlogger.addLine("NOTICE: Permission has no target")
     }
     else {
         targetId = targetQuads[0].object
@@ -840,7 +870,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
     let assigneeQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.assignee, null, null)
     let assigneeId = ""
     if (assigneeQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Permission has no assignee")
+        testlogger.addLine("NOTICE: Permission has no assignee")
     }
     else {
         assigneeId = assigneeQuads[0].object
@@ -930,6 +960,10 @@ exports.evaluatePermission = evaluatePermission
  * @param evalContext
  */
 function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
     // Evaluate the Constraints
     let constraintsEvalResult =
         evaluateAllConstraints(policyTriplestore, evalRuleid, testlogger, evalContext)
@@ -951,7 +985,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
     let targetQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.target, null, null)
     let targetId = ""
     if (targetQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Prohibition has no target")
+        testlogger.addLine("NOTICE: Prohibition has no target")
     }
     else {
         targetId = targetQuads[0].object
@@ -983,7 +1017,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
     let assigneeQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.assignee, null, null)
     let assigneeId = ""
     if (assigneeQuads.length < 1){
-        testlogger.addLine("TESTRESULT: validation notice: Prohibition has no assignee")
+        testlogger.addLine("NOTICE: Prohibition has no assignee")
     }
     else {
         assigneeId = assigneeQuads[0].object
@@ -1081,6 +1115,10 @@ exports.evaluateProhibition = evaluateProhibition
  * @param evalContext
  */
 function evaluateProhibitionAction(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
     // retrieve the actionId from the class of the subjectId
     let actionQuads = policyTriplestore.getTriplesByIRI(evalRuleid, odrlCoreVocab.action, null, null)
     let actionId = ""
@@ -1108,6 +1146,10 @@ exports.evaluateProhibitionAction = evaluateProhibitionAction
  * @param evalContext
  */
 function evaluateProhibitionRemedies(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
     // assume action has been exercised: evaluate the satisfaction of the remedies
     testlogger.addLine("NEXT STEP: Prohibtion: evaluation of remedies")
     let remedyEvalResult = evaluateAll_remedyDuties(policyTriplestore, evalRuleid, testlogger, evalContext)
@@ -1124,6 +1166,10 @@ exports.evaluateProhibitionRemedies = evaluateProhibitionRemedies
  * @param evalContext
  */
 function evaluateObligationRound1(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
 
     let obligationEvalResult = evaluateDutyInstance(policyTriplestore, evalRuleid, false, odrlCoreVocab.obligation, testlogger, evalContext)
     testlogger.addLine("TESTRESULT-FINAL: Evaluation round 1 of the full Obligation instance, status = " +
@@ -1139,6 +1185,10 @@ exports.evaluateObligationRound1 = evaluateObligationRound1
  * @param evalContext
  */
 function evaluateObligationRound2(policyTriplestore, evalRuleid, testlogger, evalContext ){
+    if (!policyTriplestore){
+        testlogger.addLine("ERROR: triple store is missing")
+        return
+    }
 
     let obligationEvalResult = evaluateDutyInstance(policyTriplestore, evalRuleid, true, odrlCoreVocab.obligation, testlogger, evalContext)
     testlogger.addLine("TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, status = " +

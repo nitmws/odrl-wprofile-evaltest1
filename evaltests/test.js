@@ -11,6 +11,10 @@ let utils = require("../services/utils")
 let evaluator = require("../evaluator/evaluator")
 
 
+/**
+ * Sets the context of a test case and runs the evaluator against it
+ * @param caseName - string, as used in the testconfig.yml file
+ */
 function doTheTest(caseName){
 
     if (!caseName){
@@ -122,45 +126,6 @@ function doTheTest(caseName){
         // at this point the id of the rule which should be evaluated is set
         tlog.addLine("NEXT STEP: Start evaluation of Rule with id '" + evalRuleid + "'")
 
-/*
-        // Evaluate the Constraints: outsourced to the evaluation of Permission, Prohibition and Obligation
-        let constraintsEvalResult =
-            evaluator.evaluateAllConstraints(policyN3store, evalRuleid, tlog, evalContext)
-        tlog.addLine("TESTRESULT: Evaluation of all constraints of the Rule, status = " + constraintsEvalResult)
-
-        if (constraintsEvalResult === evaluator.evalConstraintState[1]){
-            tlog.addLine("TESTRESULT: Constraint(s) of the Rule is/are Not-Satisfied - no further processing")
-        }
-        else {
-            if (evalRulePropertyname === "") {
-                // get the subclass of the Rule
-                let ruleQuads = policyN3store.getTriplesByIRI(null, null, evalRuleid, null)
-                if (ruleQuads) {
-                    evalRulePropertyname = ruleQuads[0].predicate
-                }
-                tlog.addLine("TESTRESULT: inferred property referring the to-be-tested Rule = " + evalRulePropertyname)
-            }
-            switch (evalRulePropertyname) {
-                case odrlCoreVocab.permission:
-                    evaluator.evaluatePermission(policyN3store, evalRuleid, tlog, evalContext)
-                    break
-                case odrlCoreVocab.prohibition:
-                    evaluator.evaluateProhibition(policyN3store, evalRuleid, tlog, evalContext)
-                    break;
-                case odrlCoreVocab.obligation:
-                    let obligationEvalRound = evalContext.obligationEvalRound
-                    switch (obligationEvalRound){
-                        case "1":
-                            evaluator.evaluateObligationRound1(policyN3store, evalRuleid, tlog, evalContext)
-                            break
-                        case "2":
-                            evaluator.evaluateObligationRound2(policyN3store, evalRuleid, tlog, evalContext)
-                            break
-                    }
-                    break;
-            }
-        }
-     */
 
         if (evalRulePropertyname === "") {
             // get the subclass of the Rule
@@ -168,7 +133,7 @@ function doTheTest(caseName){
             if (ruleQuads) {
                 evalRulePropertyname = ruleQuads[0].predicate
             }
-            tlog.addLine("TESTRESULT: inferred property referring the to-be-tested Rule = " + evalRulePropertyname)
+            tlog.addLine("TESTRESULT: property referencing the to-be-tested Rule = " + evalRulePropertyname)
         }
         switch (evalRulePropertyname) {
             case odrlCoreVocab.permission:
