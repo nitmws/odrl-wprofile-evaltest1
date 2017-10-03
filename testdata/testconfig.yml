@@ -334,7 +334,7 @@ case_imex21-2:
       refinement: "Satisfied"
       dutyAction: "Exercised"
       obligationAction: "Not-Exercised"
-      consequenceAction: "Exercised"
+      consequenceAction: "Not-Exercised"
       remedyAction: "Exercised"
       action: "Exercised"
     instances:
@@ -396,6 +396,7 @@ case_imex22-1:
       constraint: "Satisfied"
       refinement: "Satisfied"
       dutyAction: "Exercised"
+      dutyEvalRound: "1"
       obligationAction: "Exercised"
       consequenceAction: "Exercised"
       remedyAction: "Exercised"

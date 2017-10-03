@@ -6,18 +6,8 @@
 let Test1 = require("./evaltests/test")
 
 
-// Test1.doTheTest("case01") // Constraints
-
-// Test1.doTheTest("case02") // Duties
-
-
-// Test1.doTheTest("case03") // Refinement
-
-// Test1.doTheTest("case04") // Prohibition
-
 // ********************************************************
 // ********** ODRL Information Model Examples
-
 
 Test1.doTheTest("case_imex12-1")
 
@@ -69,5 +59,17 @@ Test1.doTheTest("case_imex23-5")
 Test1.doTheTest("case_imex24-1")
 Test1.doTheTest("case_imex24-2")
 Test1.doTheTest("case_imex24-3")
+
+/*
+    Test cases for developing this evaluator
+*/
+// Test1.doTheTest("case01") // Constraints
+
+// Test1.doTheTest("case02") // Duties
+
+
+// Test1.doTheTest("case03") // Refinement
+
+// Test1.doTheTest("case04") // Prohibition
 
 console.log("MSG: ODRL-withProfile Evaluator Tests finished.")

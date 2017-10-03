@@ -630,8 +630,12 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
             break
         case evalActionExersState[1]:
             // Action was Not-Exercised --> break and return Duty Not-Fulfilled
-            testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised)")
-            return evalDutyState[1]
+            if (!evalConsequences) {
+                // ... --> break and return Duty Fulfilled
+                testlogger.addLine("TESTRESULT: Evaluation of Duty instance '" + dutyId + "', status = " + evalDutyState[1] + " (action not exercised/consequences ignored)")
+                return evalDutyState[1]
+            }
+            // ... else: continue
             break;
         case evalActionExersState[2]:
             // Action is Not-Existing (due to refinements) --> break and return ERROR
@@ -647,7 +651,7 @@ function evaluateDutyInstance(policyTriplestore, dutyId, evalConsequences, prope
 
     // actually the function should get there only in case of to-be-evaluated consequences, but let's be strict:
     if (evalConsequences) {
-        if (actionEvalResult === evalActionExersState[0]) {
+        if (true) { // actionEvalResult === evalActionExersState[1]
             // step 1: action Exercised -> step 2: evaluate the Consequences
             let consequQuads = policyTriplestore.getTriplesByIRI(dutyId, odrlCoreVocab.consequence, null, null)
             if (consequQuads.length === 0) {
