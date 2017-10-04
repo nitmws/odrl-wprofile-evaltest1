@@ -171,7 +171,10 @@ Note: this function does not include the evaluation of consequence properties
 ```
 >>> All refinement Constraints (of the action):
   Satisfied: continue
-  Not-Satisfied: --> Not-Existing (Note: this may cause a validation error as the action property is mandatory in some classes.)
+  Not-Satisfied: --> Not-Existing (Note: direct logic. This may cause a validation error as the action property is mandatory in all Rule classes.)
+  OR
+  Not-Satisfied: --> Not-Exercised (Note: assumption by implicit logic: Not-Satisfied sets the action to Not-Existing, a not existing action cannot be exercised.)
+  {Programming note: currently these options of Not-Satisfied evaluation can be selected in the Javascript code - currently the second option is active}
 Was action exercised:
   Does a preset exist?
     YES: --> preset state
