@@ -1,0 +1,22 @@
+ START with test case: case_imex21-3  -- on/at 2017-10-04T07:27:11.469Z
+ DESCRIPTION: Obligation with refined action
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b21_b0'
+ NEXT STEP: Evaluation of Duty instance '_:b21_b0', referenced by 'http://www.w3.org/ns/odrl/2/obligation'
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/document:XZY', status = Not-Existing
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b21_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/delete', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/delete' (action of '_:b21_b0'), status = Not-Exercised (preset)
+ NEXT STEP: Evaluation of Duty instance '_:b21_b1', referenced by 'http://www.w3.org/ns/odrl/2/consequence'
+ NOTICE: Duty has no target
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b21_b1')
+ TESTRESULT: Evaluation of Constraint instance '_:b21_b3' (a http://www.w3.org/ns/odrl/2/refinement), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b21_b2', status = Not-Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b21_b2' - refinements, status = Not-Existing (action not existing by Not-Satisfied refinement)
+ TESTRESULT: Evaluation of Duty instance '_:b21_b1', status = Not-Fulfilled (action not existing = not exercised)
+ TESTRESULT: Evaluation of all consequence-Duty instances of  '_:b21_b0' - consequence '_:b21_b1' returned Not-Fulfilled
+ TESTRESULT: Evaluation of Duty instance '_:b21_b0', status = Not-Fulfilled (action not exercised, consequences Not-Fulfilled)
+ TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, status = Not-Fulfilled
+ CLOSING test case: case_imex21-3  -- on/at 2017-10-04T07:27:11.914Z

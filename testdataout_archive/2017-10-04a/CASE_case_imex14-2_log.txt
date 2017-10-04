@@ -1,0 +1,11 @@
+ START with test case: case_imex14-2  -- on/at 2017-10-04T07:27:11.442Z
+ DESCRIPTION: Permission with action refinement
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b4_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/document:1234', status = Not-Existing
+ NOTICE: Permission has no assignee
+ TESTRESULT: Evaluation of Constraint instance '_:b4_b2' (a http://www.w3.org/ns/odrl/2/refinement), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b4_b1', status = Not-Satisfied
+ TESTRESULT-FINAL: Evaluation of ActionExercised '_:b4_b1' - refinements, status = Not-Existing (action not existing by Not-Satisfied refinement) -- no further processing of the Permission
+ CLOSING test case: case_imex14-2  -- on/at 2017-10-04T07:27:11.825Z

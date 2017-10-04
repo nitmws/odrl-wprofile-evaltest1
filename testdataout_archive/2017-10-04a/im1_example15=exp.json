@@ -1,0 +1,48 @@
+[
+  {
+    "@type": [
+      "http://www.w3.org/ns/odrl/2/Offer"
+    ],
+    "http://www.w3.org/ns/odrl/2/permission": [
+      {
+        "http://www.w3.org/ns/odrl/2/action": [
+          {
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#value": [
+              {
+                "@id": "http://www.w3.org/ns/odrl/2/reproduce"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/refinement": [
+              {
+                "http://www.w3.org/ns/odrl/2/xone": [
+                  {
+                    "@id": "http://example.com/p:88/C1"
+                  },
+                  {
+                    "@id": "http://example.com/p:88/C2"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assigner": [
+          {
+            "@id": "http://example.com/org/paisley-park"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/target": [
+          {
+            "@id": "http://example.com/book/1999"
+          }
+        ]
+      }
+    ],
+    "http://www.w3.org/ns/odrl/2/profile": [
+      {
+        "@id": "http://example.com/odrl:profile:10"
+      }
+    ],
+    "@id": "http://example.com/policy:88"
+  }
+]
