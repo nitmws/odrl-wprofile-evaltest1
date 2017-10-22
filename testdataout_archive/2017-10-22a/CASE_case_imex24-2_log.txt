@@ -1,0 +1,21 @@
+ START with test case: case_imex24-2  -- on/at 2017-10-22T16:39:17.199Z
+ DESCRIPTION: Prohibition with remedy
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b36_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/data:77', status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/org:99', status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b36_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/index', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/index' (action of '_:b36_b0'), status = Exercised (preset)
+ NEXT STEP: Action of Prohibition exercised: evaluation of remedies
+ NEXT STEP: Evaluation of Duty instance '_:b36_b1', referenced by 'http://www.w3.org/ns/odrl/2/remedy'
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/data:77', status = Not-Existing
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b36_b1')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/anonymize', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/anonymize' (action of '_:b36_b1'), status = Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b36_b1', status = Fulfilled (action exercised)
+ TESTRESULT: Evaluation of all remedy(ies), status = Fulfilled
+ TESTRESULT-FINAL: Evaluation of the full Prohibition instance - [Eval: ACTIVE] status = Not-Infringed
+ CLOSING test case: case_imex24-2  -- on/at 2017-10-22T16:39:17.723Z

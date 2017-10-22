@@ -1,0 +1,11 @@
+ START with test case: case_imex18-1  -- on/at 2017-10-22T16:39:17.176Z
+ DESCRIPTION: Permission with constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b13_b0'
+ TESTRESULT: Evaluation of Constraint instance '_:b13_b1' (a http://www.w3.org/ns/odrl/2/constraint), status = Satisfied (preset)
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Satisfied
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/game:9090', status = Not-Existing
+ NOTICE: Permission has no assignee
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/play', status = Not-Existing
+ TESTRESULT-FINAL: Evaluation of the full Permission instance [Eval: ACTIVE], status = Allowed
+ CLOSING test case: case_imex18-1  -- on/at 2017-10-22T16:39:17.584Z

@@ -1,0 +1,25 @@
+ START with test case: case_imex23-3b  -- on/at 2017-10-22T16:39:17.195Z
+ DESCRIPTION: Permission with duty having a consequence
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b32_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/data:77', status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/person:88', status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/distribute', status = Not-Existing
+ NEXT STEP: Evaluation of Duty instance '_:b32_b1', referenced by 'http://www.w3.org/ns/odrl/2/duty'
+ NOTICE: Duty has no target
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b32_b1')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/attribute', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/attribute' (action of '_:b32_b1'), status = Exercised (preset)
+ NEXT STEP: Evaluation of Duty instance '_:b32_b2', referenced by 'http://www.w3.org/ns/odrl/2/consequence'
+ NOTICE: Duty has no target
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b32_b2')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/acceptTracking', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/acceptTracking' (action of '_:b32_b2'), status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b32_b2', status = Not-Fulfilled (action not exercised/consequences ignored)
+ TESTRESULT: Evaluation of all consequence-Duty instances of  '_:b32_b1' - consequence '_:b32_b2' returned Not-Fulfilled
+ TESTRESULT: Evaluation of Duty instance '_:b32_b1', status = Not-Fulfilled (action not exercised, consequences Not-Fulfilled)
+ TESTRESULT-FINAL: Evaluation of the full Permission instance [Eval: ACTIVE], status = Not-Allowed
+ CLOSING test case: case_imex23-3b  -- on/at 2017-10-22T16:39:17.700Z

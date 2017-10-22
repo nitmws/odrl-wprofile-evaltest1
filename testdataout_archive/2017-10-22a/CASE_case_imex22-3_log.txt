@@ -1,0 +1,19 @@
+ START with test case: case_imex22-3  -- on/at 2017-10-22T16:39:17.189Z
+ DESCRIPTION: Permission with duty having action refinement and constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b26_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/music/1999.mp3', status = Not-Existing
+ NOTICE: Permission has no assignee
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/play', status = Not-Existing
+ NEXT STEP: Evaluation of Duty instance '_:b26_b1', referenced by 'http://www.w3.org/ns/odrl/2/duty'
+ TESTRESULT: Evaluation of Constraint instance '_:b26_b4' (a http://www.w3.org/ns/odrl/2/constraint), status = Satisfied (preset)
+ NOTICE: Duty has no target
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b26_b1')
+ TESTRESULT: Evaluation of Constraint instance '_:b26_b3' (a http://www.w3.org/ns/odrl/2/refinement), status = Not-Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b26_b2', status = Not-Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b26_b2' - refinements, status = Not-Existing (action not existing by Not-Satisfied refinement)
+ TESTRESULT: Evaluation of Duty instance '_:b26_b1', status = Not-Fulfilled (action not existing = not exercised)
+ TESTRESULT-FINAL: Evaluation of the full Permission instance [Eval: ACTIVE], status = Not-Allowed
+ CLOSING test case: case_imex22-3  -- on/at 2017-10-22T16:39:17.664Z

@@ -1,0 +1,7 @@
+ START with test case: case01  -- on/at 2017-09-12T19:50:12.576Z
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ TESTRESULT: Evalution of all constraints, status = Satisfied
+ TESTRESULT: inferred sub-class = http://www.w3.org/ns/odrl/2/permission
+ TESTRESULT: Evalution of all duty(ies), status = Not-Existing
+ TESTRESULT: Evalution of the full Permission instance, status = Allowed
+ CLOSING test case: case01  -- on/at 2017-09-12T19:50:12.993Z

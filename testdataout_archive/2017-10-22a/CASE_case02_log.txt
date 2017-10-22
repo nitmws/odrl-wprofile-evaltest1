@@ -1,0 +1,17 @@
+ START with test case: case02  -- on/at 2017-09-19T06:23:55.833Z
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id 'http://example.com/permission:01'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: inferred property referring the to-be-tested Rule = http://www.w3.org/ns/odrl/2/permission
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/distribute', status = Not-Existing
+ NEXT STEP: Evaluation of ActionExercised of action 'http://www.w3.org/ns/odrl/2/attribute'
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/attribute', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/attribute', status = Not-Exercised (preset)
+ NEXT STEP: Evaluation of ActionExercised of action 'http://www.w3.org/ns/odrl/2/acceptTracking'
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/acceptTracking', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/acceptTracking', status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b0_b1', status = Not-Fulfilled (action not exercised)
+ TESTRESULT: Evaluation of all consequence-Duty instances of  '_:b0_b0' - consequence '_:b0_b1' returned Not-Fulfilled
+ TESTRESULT: Evaluation of Duty instance '_:b0_b0', status = Not-Fulfilled (action not exercised, consequences Not-Fulfilled)
+ TESTRESULT-FINAL: Evaluation of the full Permission instance, status = Not-Allowed
+ CLOSING test case: case02  -- on/at 2017-09-19T06:23:56.131Z
