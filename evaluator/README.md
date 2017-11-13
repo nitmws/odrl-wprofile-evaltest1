@@ -1,9 +1,7 @@
 # The logic implemented by this evaluator
 
-(This document is currently Under Construction)
-
 ### Basics:
-* the evaluation of Rules, Logical/Constraints, Action exercised or Duties return if the Rule is ACTIVE (or NOT) a state. All terms used as name of a state are starting with an uppercase character and are used in the logic below:
+* the evaluation of Rules, Logical/Constraints, Action exercised or Duties return if the Rule is ACTIVE (or NOT) and a state. All terms used as name of a state are starting with an uppercase character and are used in the logic below:
   * affirmative state (term depends on evaluated subject, see below)
   * negative state (term depends on evaluated subject, see below)
   * Not-Existing state

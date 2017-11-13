@@ -38,7 +38,7 @@ Overview of files and folders of this project:
 * README.md: this file
 * package.json: configuration file required for Node JS and NPM
 * /evaltest: JS file(s) running the test(s)
-* /evaluator: JS file of the evaluator, file README.md documenting the logic of the evaluator.
+* /evaluator: JS file of the evaluator, file README.md documenting the logic implemented by this evaluator.
 * /model: JS files providing identifiers of Things defined by the ODRL Information Model or an ODRL Profile
 * /services: JS files supporting the project
 * /testdata: JSON-LD files with ODRL Policy data, the test configuration file (YAML)
