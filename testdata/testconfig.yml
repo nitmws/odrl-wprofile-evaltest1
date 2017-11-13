@@ -332,7 +332,7 @@ case_imex23-2b:
   evalRuleproperty: "permission.1"
   evalpresets:
     defaults:
-      dutyAction: "Exercised"
+      dutyAction: "Not-Exercised"
       dutyEvalRound: "2"
       consequenceAction: "Exercised"
     instances:
@@ -354,7 +354,7 @@ case_imex23-3b:
   evalRuleproperty: "permission.1"
   evalpresets:
     defaults:
-      dutyAction: "Exercised"
+      dutyAction: "Not-Exercised"
       dutyEvalRound: "2"
       consequenceAction: "Not-Exercised"
     instances:

@@ -20,6 +20,8 @@ const evalProhibitionState = ["Not-Infringed", "Infringed", "Not-Existing", "ERR
 exports.evalProhibitionState = evalProhibitionState
 const evalActionExersState = ["Exercised", "Not-Exercised", "Not-Existing", "ERROR"]
 exports.evalActionExersState = evalActionExersState
+const evalRuleActiveState = ["ACTIVE", "NOT-ACTIVE"]
+exports.evalRuleActiveState = evalRuleActiveState
 
 /*
     *************************************************************************************
@@ -846,7 +848,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
         case evalConstraintState[1]:
         case evalConstraintState[3]:
             testlogger.addLine("TESTRESULT-FINAL: Evaluation of all constraints of the Rule, status = " + constraintsEvalResult
-                + " -- no further evaluation [Eval: NOT ACTIVE]")
+                + " -- no further evaluation of the Permission [Rule is: NOT ACTIVE], status = " + evalPermissionState[1])
             return
             break
     }
@@ -870,7 +872,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
             case evalConstraintState[1]:
                 // refinements are Not-Satisified --> return a Not-Existing
                 testlogger.addLine("TESTRESULT-FINAL: Evaluation of target '" + targetId + "' - refinements, status = "
-                    + evalDutyState[2] + " (target not existing by Not-Satisfied refinement) -- no further processing of the Permission [Eval: NOT ACTIVE]")
+                    + evalDutyState[2] + " (target not existing by Not-Satisfied refinement) -- no further processing of the Permission [Rule is: NOT ACTIVE], status = " + evalPermissionState[1])
                 return
                 break;
             case evalConstraintState[2]:
@@ -902,7 +904,7 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
             case evalConstraintState[1]:
                 // refinements are Not-Satisified --> return a Not-Existing
                 testlogger.addLine("TESTRESULT-FINAL: Evaluation of assignee '" + targetId + "' - refinements, status = "
-                    + evalDutyState[2] + " (assignee not existing by Not-Satisfied refinement)  -- no further processing of the Permission [Eval: NOT ACTIVE]")
+                    + evalDutyState[2] + " (assignee not existing by Not-Satisfied refinement)  -- no further processing of the Permission [Rule is: NOT ACTIVE], status = " + evalPermissionState[1])
                 return
                 break;
             case evalConstraintState[2]:
@@ -934,9 +936,9 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
             // refinements are Satisified --> continue processing
             break;
         case evalConstraintState[1]:
-            // refinements are Not-Satisified --> return a Not-Existing
+            // refinements are Not-Satisified --> return a Not-Existing and Not-Allowed
             testlogger.addLine("TESTRESULT-FINAL: Evaluation of ActionExercised '" + actionId + "' - refinements, status = "
-                + evalDutyState[2] + " (action not existing by Not-Satisfied refinement) -- no further processing of the Permission [Eval: NOT ACTIVE]")
+                + evalDutyState[2] + " (action not existing by Not-Satisfied refinement) -- no further processing of the Permission [Rule is: NOT ACTIVE], status = " + evalPermissionState[1] )
             return
             break;
         case evalConstraintState[2]:
@@ -950,21 +952,24 @@ function evaluatePermission(policyTriplestore, evalRuleid, testlogger, evalConte
 
     let dutyEvalResult = evaluateAll_dutyDuties(policyTriplestore, evalRuleid, testlogger, evalContext)
     let permissionStateIdx = 0
+    let ruleActiveStateIdx = 0
     switch(dutyEvalResult){
         case evalDutyState[0]:
             permissionStateIdx = 0;
             break;
         case evalDutyState[1]:
             permissionStateIdx = 1;
+            ruleActiveStateIdx = 1;
             break;
         case evalDutyState[2]:
             permissionStateIdx = 0;
             break;
         case evalDutyState[3]:
             permissionStateIdx = 3;
+            ruleActiveStateIdx = 1;
             break;
     }
-    testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Permission instance [Eval: ACTIVE], status = " +
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Permission instance [Rule is: " + evalRuleActiveState[ruleActiveStateIdx]+ "], status = " +
         evalPermissionState[permissionStateIdx])
 }
 exports.evaluatePermission = evaluatePermission
@@ -1017,7 +1022,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
             case evalConstraintState[1]:
                 // refinements are Not-Satisified --> return a Not-Existing
                 testlogger.addLine("TESTRESULT-FINAL: Evaluation of target '" + targetId + "' - refinements, status = "
-                    + evalDutyState[2] + " (target not existing by Not-Satisfied refinement)  -- no further processing of the Prohibition [Eval: NOT ACTIVE]")
+                    + evalDutyState[2] + " (target not existing by Not-Satisfied refinement)  -- no further processing of the Prohibition [Rule is: NOT ACTIVE]")
                 return
                 break;
             case evalConstraintState[2]:
@@ -1049,7 +1054,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
             case evalConstraintState[1]:
                 // refinements are Not-Satisified --> return a Not-Existing
                 testlogger.addLine("TESTRESULT-FINAL: Evaluation of assignee '" + targetId + "' - refinements, status = "
-                    + evalDutyState[2] + " (assignee not existing by Not-Satisfied refinement)  -- no further processing of the Prohibition [Eval: NOT ACTIVE]")
+                    + evalDutyState[2] + " (assignee not existing by Not-Satisfied refinement)  -- no further processing of the Prohibition [Rule is: NOT ACTIVE]")
                 return
                 break;
             case evalConstraintState[2]:
@@ -1084,7 +1089,7 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
             // action was not exercised - Prohibition is not violated
             testlogger.addLine("TESTRESULT: Evaluation of ActionExercised '" + actionId + "', status = "
                 + actionExercisedEvalResult)
-            testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Prohibition instance - [Eval: ACTIVE] status = " +
+            testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Prohibition instance - [Rule is: ACTIVE] status = " +
                 evalProhibitionState[0])
             return
             break;
@@ -1109,19 +1114,19 @@ function evaluateProhibition(policyTriplestore, evalRuleid, testlogger, evalCont
     switch(remedyEvalResult){
         case evalDutyState[0]:
             prohibitionStateIdx = 0;
-            evalNotice = "[Eval: ACTIVE]"
+            evalNotice = "[Rule is: ACTIVE]"
             break;
         case evalDutyState[1]:
             prohibitionStateIdx = 1;
-            evalNotice = "[Eval: ACTIVE]"
+            evalNotice = "[Rule is: ACTIVE]"
             break;
         case evalDutyState[2]:
             prohibitionStateIdx = 0;
-            evalNotice = "[Eval: ACTIVE]"
+            evalNotice = "[Rule is: ACTIVE]"
             break;
         case evalDutyState[3]:
             prohibitionStateIdx = 3;
-            evalNotice = " [Eval: NOT ACTIVE]"
+            evalNotice = " [Rule is: NOT ACTIVE]"
             break;
     }
     testlogger.addLine("TESTRESULT-FINAL: Evaluation of the full Prohibition instance - " + evalNotice + " status = " +
@@ -1163,7 +1168,7 @@ function evaluateObligationRound1(policyTriplestore, evalRuleid, testlogger, eva
     }
 
     let obligationEvalResult = evaluateDutyInstance(policyTriplestore, evalRuleid, false, odrlCoreVocab.obligation, testlogger, evalContext)
-    testlogger.addLine("TESTRESULT-FINAL: Evaluation round 1 of the full Obligation instance, [Eval: ACTIVE] status = " +
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation round 1 of the full Obligation instance, [Rule is: ACTIVE] status = " +
         obligationEvalResult)
 }
 exports.evaluateObligationRound1 = evaluateObligationRound1
@@ -1182,7 +1187,7 @@ function evaluateObligationRound2(policyTriplestore, evalRuleid, testlogger, eva
     }
 
     let obligationEvalResult = evaluateDutyInstance(policyTriplestore, evalRuleid, true, odrlCoreVocab.obligation, testlogger, evalContext)
-    testlogger.addLine("TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, [Eval: ACTIVE] status = " +
+    testlogger.addLine("TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, [Rule is: ACTIVE] status = " +
         obligationEvalResult)
 }
 exports.evaluateObligationRound2 = evaluateObligationRound2
