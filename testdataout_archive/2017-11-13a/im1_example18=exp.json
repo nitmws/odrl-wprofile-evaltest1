@@ -1,0 +1,51 @@
+[
+  {
+    "@type": [
+      "http://www.w3.org/ns/odrl/2/Offer"
+    ],
+    "http://www.w3.org/ns/odrl/2/permission": [
+      {
+        "http://www.w3.org/ns/odrl/2/action": [
+          {
+            "@id": "http://www.w3.org/ns/odrl/2/play"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/assigner": [
+          {
+            "@id": "http://example.com/org:xyz"
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/constraint": [
+          {
+            "http://www.w3.org/ns/odrl/2/leftOperand": [
+              {
+                "@id": "http://www.w3.org/ns/odrl/2/dateTime"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/operator": [
+              {
+                "@id": "http://www.w3.org/ns/odrl/2/lteq"
+              }
+            ],
+            "http://www.w3.org/ns/odrl/2/rightOperand": [
+              {
+                "@value": "2017-12-31"
+              }
+            ]
+          }
+        ],
+        "http://www.w3.org/ns/odrl/2/target": [
+          {
+            "@id": "http://example.com/game:9090"
+          }
+        ]
+      }
+    ],
+    "http://www.w3.org/ns/odrl/2/profile": [
+      {
+        "@id": "http://example.com/odrl:profile:07"
+      }
+    ],
+    "@id": "http://example.com/policy:9090"
+  }
+]

@@ -1,0 +1,21 @@
+ START with test case: case_imex21-4  -- on/at 2017-11-13T14:37:41.344Z
+ DESCRIPTION: Obligation with refined action of a consequence
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b22_b0'
+ NEXT STEP: Evaluation of Duty instance '_:b22_b0', referenced by 'http://www.w3.org/ns/odrl/2/obligation'
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/document:XZY', status = Not-Existing
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b22_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/delete', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/delete' (action of '_:b22_b0'), status = Exercised (preset)
+ NEXT STEP: Evaluation of Duty instance '_:b22_b1', referenced by 'http://www.w3.org/ns/odrl/2/consequence'
+ NOTICE: Duty has no target
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b22_b1')
+ TESTRESULT: Evaluation of Constraint instance '_:b22_b3' (a http://www.w3.org/ns/odrl/2/refinement), status = Satisfied (preset)
+ TESTRESULT: Evaluation of all refinements of '_:b22_b2', status = Satisfied
+ TESTRESULT: Evaluation of ActionExercised '_:b22_b2' (action of '_:b22_b1'), status = Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b22_b1', status = Fulfilled (action exercised)
+ TESTRESULT: Evaluation of all consequence-Duty instances of '_:b22_b0', status = Fulfilled
+ TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, [Rule is: ACTIVE] status = Fulfilled
+ CLOSING test case: case_imex21-4  -- on/at 2017-11-13T14:37:42.147Z

@@ -1,0 +1,13 @@
+ START with test case: case_imex21-2  -- on/at 2017-11-13T14:37:41.343Z
+ DESCRIPTION: Obligation with refined action of a consequence
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b20_b0'
+ NEXT STEP: Evaluation of Duty instance '_:b20_b0', referenced by 'http://www.w3.org/ns/odrl/2/obligation'
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/document:XZY', status = Not-Existing
+ NOTICE: Duty has no assignee
+ NEXT STEP: Evaluation of ActionExercised of action (of Rule '_:b20_b0')
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/delete', status = Not-Existing
+ TESTRESULT: Evaluation of ActionExercised 'http://www.w3.org/ns/odrl/2/delete' (action of '_:b20_b0'), status = Not-Exercised (preset)
+ TESTRESULT: Evaluation of Duty instance '_:b20_b0', status = Not-Fulfilled (action not exercised/consequences ignored)
+ TESTRESULT-FINAL: Evaluation round 2 of the full Obligation instance, [Rule is: ACTIVE] status = Not-Fulfilled
+ CLOSING test case: case_imex21-2  -- on/at 2017-11-13T14:37:42.137Z

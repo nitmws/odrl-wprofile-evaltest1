@@ -1,0 +1,10 @@
+ START with test case: case_imex12-1  -- on/at 2017-11-13T14:37:41.312Z
+ DESCRIPTION: Permission with constraint
+ MSG: JSON-LD read, parsed, transformed to RDF, files written 
+ NEXT STEP: Start evaluation of Rule with id '_:b0_b0'
+ TESTRESULT: Evaluation of all constraints of the Rule, status = Not-Existing
+ TESTRESULT: Evaluation of all refinements of 'http://example.com/music:1012', status = Not-Existing
+ NOTICE: Permission has no assignee
+ TESTRESULT: Evaluation of all refinements of 'http://www.w3.org/ns/odrl/2/play', status = Not-Existing
+ TESTRESULT-FINAL: Evaluation of the full Permission instance [Rule is: ACTIVE], status = Allowed
+ CLOSING test case: case_imex12-1  -- on/at 2017-11-13T14:37:42.015Z
