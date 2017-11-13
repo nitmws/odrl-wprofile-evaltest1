@@ -11,12 +11,13 @@ This project implements all required evaluation steps:
 * are constraints of a Rule Satisfied (or not)
 * are refinements of the action of a Rule Satisfied (or not)
 * has the action of a Duty been exercised (or not), including have its refinements been Satisfied
+* has the action of a Prohibition been exercised (or not), including have its refinements been Satisfied
 * have required consequences of a Duty been Fulfilled (or Not Fulfilled)
 * have required remedies of a Prohibition been Fulfilled (or Not Fulfilled)
 
 All these evaluations are defined in detail by the ODRL Information Model document.
 
-A goal of this project is to support all example policies of the ODRL Information Model document's [Candidate Recommendation (CR)](https://www.w3.org/TR/odrl-model/) document. 
+A goal of this project is to support all example policies of the ODRL Information Model document's [Candidate Recommendation (CR)](https://www.w3.org/TR/odrl-model/) version. 
 
 As the evaluation of some components require a context (= what action on what asset should be taken by whom ...) and as this project's testground has no context driven be a production environment this implementation supports presetting values relevant for the evaluation by a configuration file including:
 * the filename of the JSON-LD providing the ODRL Policy
@@ -37,11 +38,12 @@ Overview of files and folders of this project:
 * README.md: this file
 * package.json: configuration file required for Node JS and NPM
 * /evaltest: JS file(s) running the test(s)
+* /evaluator: JS file of the evaluator, file README.md documenting the logic of the evaluator.
 * /model: JS files providing identifiers of Things defined by the ODRL Information Model or an ODRL Profile
 * /services: JS files supporting the project
 * /testdata: JSON-LD files with ODRL Policy data, the test configuration file (YAML)
 * /testdataout: the files created by the ODRL Evaluator (is ignored by git)
-* /testdataout_archive: subfolders holding data of the /testdataout folder of a specific test sequence
+* /testdataout_archive: subfolders holding data of the /testdataout folder of a specific test sequence. (Folder names are dates of running a test suite.)
 
 ### Errors, Issues, Feedback
 
